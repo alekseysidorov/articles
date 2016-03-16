@@ -2,13 +2,13 @@
 
 ### Машинное обучение в Rust
 
-This post is aimed at readers who are familiar with Rust and want some insight into why it is great for machine learning.
+Этот пост ориентирован на читателей, которые знакомы с Rust'ом и хотят получить некоторое представление о том, почему он очень хорош для машинного обучения
 
-A machine learning problem
-Why is machine learning hard?
-What is rusty-machine?
-Where are we now?
-What’s next?
+Проблема машинного обучения
+Почему машинное обучение такое трудное?
+Что это за ржавая машина?
+Что дальше?
+
 A brief highlight of other community efforts
 I will pick a particular problem that can be solved using machine learning and talk (briefly) through one solution. This isn’t intended as a tutorial on this particular technique but will instead give some context on why machine learning is difficult.
 
