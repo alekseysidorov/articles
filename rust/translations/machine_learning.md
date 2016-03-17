@@ -18,11 +18,11 @@ excerpt:
 
  * [Проблемы машинного обучения](#Давайте-поговорим-о-проблемах-машинного-обучения)
  * Почему машинное обучение такое трудное?
- * Что это за ржавая машина?
+ * Что такое rusty machine?
  * Что дальше?
- * A brief highlight of other community efforts
-
-I will pick a particular problem that can be solved using machine learning and talk (briefly) through one solution. This isn’t intended as a tutorial on this particular technique but will instead give some context on why machine learning is difficult.
+ * Краткий взгляд на другие проекты сообщества
+ 
+В статье я подниму конкретную проблему которая может быть решена с помощью машинного обучения и расскажу (кратко) опишу одно решение. Она является учебным пособием по данной методике, но вместе с тем она дает некоторое понимание того, почему машинное обучение такое сложное. 
 
 Afterwards I’ll be describing briefly the work I’ve been doing on rusty-machine. Rusty-machine is a general purpose machine learning library implemented entirely in Rust. With this post I will illustrate with examples some of the strengths of rusty-machine. This is by no means a complete summary - though I intend to cover more completely how rusty-machine is put together in future posts.
 
