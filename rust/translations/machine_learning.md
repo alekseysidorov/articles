@@ -24,15 +24,15 @@ excerpt:
  
 В статье я подниму конкретную проблему которая может быть решена с помощью машинного обучения и расскажу (кратко) опишу одно решение. Она является учебным пособием по данной методике, но вместе с тем она дает некоторое понимание того, почему машинное обучение такое сложное. 
 
-Afterwards I’ll be describing briefly the work I’ve been doing on rusty-machine. Rusty-machine is a general purpose machine learning library implemented entirely in Rust. With this post I will illustrate with examples some of the strengths of rusty-machine. This is by no means a complete summary - though I intend to cover more completely how rusty-machine is put together in future posts.
+После чего я кратко расскажу о работе, которую я проделал на rusty-machine. Rusty-machine это библиотека машинного обучения общего назначения реализованная полностью на Rust'е. Эту статью я проиллюстрирую примерами некоторых сильных сторон rusty-machine. Это ни в коем случае не полностью законченная статья, я планирую более детально охватить работу rusty-machine в своих будующих статях.
 
-I’d love to get some feedback - both on this post and on the library.
+Я буду рад получить отзывы как о статье, так и о библиотеке.
 
-Note: I’m planning on doing a write-up in a similar vein for those who are not so familiar with Rust.
+Замечание: Я планирую написать статью в таком же духе для тех, кто не так хорошо знакомы с Rust'ом. 
 
 ### Давайте поговорим о проблемах машинного обучения ##
 
-If you’re familiar with machine learning you can skip this section and go on to read about rusty-machine.
+Если вы знакомы с машинным обучением, то можете пропустить этот раздел и сразу перейти к расскажу о rusty-machine.
 
 We’ll consider the problem of classifying whether a tumor is malignant or benign. Doctors use various tools to take measurements of tumors, for example the size, symmetry, compactness, etc. Using these measurements the doctor wishes to identify whether the tumor is malignant or benign so that they can take the best course of action.
 
