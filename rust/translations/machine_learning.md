@@ -1,15 +1,27 @@
-<!-- article from https://athemathmo.github.io/2016/03/07/rusty-machine.html --> 
+---
+title: "Машинное обучение в Rust"
+categories:обзор
+published: true
+author: James Lucas (перевел Алексей Сидоров)
+excerpt:
+    *Эта статья – перевод статьи
+    [Machine Learning in Rust](https://athemathmo.github.io/2016/03/07/rusty-machine.html#lets-talk-about-a-machine-learning-problem)
+    за авторством James Lucas*
+
+---
+
+*Эта статья – перевод статьи
 
 ### Машинное обучение в Rust
 
 Этот пост ориентирован на читателей, которые знакомы с Rust'ом и хотят получить некоторое представление о том, почему он очень хорош для машинного обучения
 
-Проблема машинного обучения
-Почему машинное обучение такое трудное?
-Что это за ржавая машина?
-Что дальше?
+ * [Проблемы машинного обучения](#давайте_поговорим_о_проблемах_машинного_обучения)
+ * Почему машинное обучение такое трудное?
+ * Что это за ржавая машина?
+ * Что дальше?
+ * A brief highlight of other community efforts
 
-A brief highlight of other community efforts
 I will pick a particular problem that can be solved using machine learning and talk (briefly) through one solution. This isn’t intended as a tutorial on this particular technique but will instead give some context on why machine learning is difficult.
 
 Afterwards I’ll be describing briefly the work I’ve been doing on rusty-machine. Rusty-machine is a general purpose machine learning library implemented entirely in Rust. With this post I will illustrate with examples some of the strengths of rusty-machine. This is by no means a complete summary - though I intend to cover more completely how rusty-machine is put together in future posts.
@@ -18,7 +30,7 @@ I’d love to get some feedback - both on this post and on the library.
 
 Note: I’m planning on doing a write-up in a similar vein for those who are not so familiar with Rust.
 
-Let’s talk about a machine learning problem
+### Давайте поговорим о проблемах машинного обучения ##
 
 If you’re familiar with machine learning you can skip this section and go on to read about rusty-machine.
 
