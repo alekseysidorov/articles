@@ -34,23 +34,27 @@ excerpt:
 
 Если вы знакомы с машинным обучением, то можете пропустить этот раздел и сразу перейти к расскажу о rusty-machine.
 
-We’ll consider the problem of classifying whether a tumor is malignant or benign. Doctors use various tools to take measurements of tumors, for example the size, symmetry, compactness, etc. Using these measurements the doctor wishes to identify whether the tumor is malignant or benign so that they can take the best course of action.
+Мы рассмотрим проблему классификации того, является ли опухоль злокачественной или доброкачественной. Врачи используют различные меры классификации опухолей, для примера их можно различать по размеру, симметричности, компактности и т.д.
+Используя эти меры врачи хотят определить является ли опухоль доброкачественной или злокачественной так, как это определяет наилучшую последовательность действий.
 
-This is a problem that we can address using machine learning.
+Эту проблему мы можем разрешить с помощью машинного обучения.
 
-“Field of study that gives computers the ability to learn without being explicitly programmed.” - Arthur Samuel
+"Область исследования, что дает компьютерам способность учиться, не будучи явно запрограммированными." - [Артур Сэмюэл](https://ru.wikipedia.org/wiki/%D0%A1%D1%8D%D0%BC%D1%8E%D1%8D%D0%BB,_%D0%90%D1%80%D1%82%D1%83%D1%80)
 
-There are a number of different machine learning tools that can be used to solve this problem. We will only consider one of these tools - The Logistic Regression Model.
+Существует множество различных инструментов машинного обучения, которые мы могли бы использовать для решения этой проблемы. Мы предлагаем один из них - логистическую регрессию.
 
-The high-level idea behind logistic regression is that we take a weighted sum of the tumors features and then scale this value to be between 0 and 1 - so that it can be thought of as the probability that a tumor is malignant. For example if we have measurements for the volume and the average radius of the tumor (denoted x1 and x2 respectively). Let β be the vector of weight parameters. Then our weighted sum would be given by:
+Базовая идея логистической регрессии заключается в том, что мы берем взвешенную сумму признаков опухоли и затем нормируем её в пределах от 0 до 1 так, чтобы мы могли рассматривать её как вероятность того, что опухоль злокачественная. В качестве примера мы имеем измерения для объема и среднего радиуса опухолей (обозначим их x1 и x2 соответственно). 
+Пусть β является вектором весовых параметров, тогда наша взвешенная сумма будет вычисляться по формуле:
 
 xTβ = β0 + β1x1 + β2x2.
 
-The β vector makes up the parameters of the logistic regression model. Note that here we have appended x0 = 1 to our features. This is a common practice used to model an intercept term. The method we use to scale this weighted sum is where the logistic regression model gets its name, the Logistic Function:
+Вектор β формирует параметры модели логистической регрессии. Обратите внимание, что здесь мы добавили x0 = 1 к нашим признакам. Это обычная практика используется для моделирования свободного члена. Этот метод, который мы используем для масштабирования нашей взвешенной суммы модели логистической регрессии, получил свое имя - логистическая функция.
 
-The Logistic Function
+Логистическая функция
 
-To decide whether a tumor is malignant or benign we compute h(xTβ). This tells us the probability that the tumor is malignant (greater than 0.5 suggests the tumor is likely to be malignant).
+Чтобы решить будь то опухоль злокачественная или нет мы рассчитываем h(xTβ). Она покажет нам вероятность того, что опухоль злокачественная (если вероятность больше 0.5, то опухоль, скорее всего, злокачественная)
+
+Это всё прекрасно, но мы ещё не учимся. Идея логистической регрессии в том, что вы можем 
 
 All of this is great, but we’re not learning yet. The idea behind logistic regression is that we can learn what the β vector should be based on some sample (training) data. This process is known as training the model. A common approach to doing this is through Gradient Descent optimization. This involves defining a cost function and finding the parameters which minimize this cost. I won’t go into the details here but there are plenty of great resources online.
 
