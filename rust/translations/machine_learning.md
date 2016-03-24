@@ -54,21 +54,21 @@ xTβ = β0 + β1x1 + β2x2.
 
 Чтобы решить будь то опухоль злокачественная или нет мы рассчитываем h(xTβ). Она покажет нам вероятность того, что опухоль злокачественная (если вероятность больше 0.5, то опухоль, скорее всего, злокачественная)
 
-Это всё прекрасно, но мы ещё не учимся. Идея логистической регрессии в том, что вы можем 
+Это всё прекрасно, но мы ещё не учимся. Идея логистической регрессии в том, что вы можем узнать, что вектор β должен быть основан на некоторой обучающей выборке. Этот процесс известен как тренировка модели. В общем случае это делается через метод градиентного спуска. Это включает определение весовой функции и поиск параметров, которые минимизируют её вес. 
 
-All of this is great, but we’re not learning yet. The idea behind logistic regression is that we can learn what the β vector should be based on some sample (training) data. This process is known as training the model. A common approach to doing this is through Gradient Descent optimization. This involves defining a cost function and finding the parameters which minimize this cost. I won’t go into the details here but there are plenty of great resources online.
+Почему машинное обучение сложно?
 
-Why is machine learning hard?
+Как я уже говорил выше существует множество различных методик, которые мы можем использовать для классификации опухолей. Даже если мы выбрали бы технику, существует множество других тонкостей. Какой алгоритм мы используем для тренировки модели? Как мы строим нашу весовую функцию? Как мы выбираем лучшее подмножество данных, которое отражает нашу проблему?
 
-As I said above there are many different techniques we could have used to classify the tumors. Even once we have chosen a technique there are many other considerations. Which algorithm do we use to train the model? How do we construct our cost function? How do we choose the best subset of the data to represent our problem?
+Машинное обучение сталкивается с ещё одним вызовом, который связан с предыдущими. Мы довольно часто работает с огромными объемами данных, которые заставляют нашу модель тренироваться очень долгое время. Мы нуждаемся в инструментах, которые улучшат производительность без потери гибкости, необходимой для изучения всех различных вариантов, связаных даже с одной единственной моделью.
 
-Machine learning comes with another challenge which is linked to the above. We often work with huge amounts of data which makes training our models take a very long time. We need our tools to emphasize performance without sacrificing the flexibility required to explore all of the different options associated with even a single model.
+Rusty-machine это попытка решить эту проблему. Благодаря использованию высокопроизводительных и высокоуровневых возможностей мы стремимся создать фреймворок для инеративной разработки и скорости.
 
-Rusty-machine is an attempt to solve this problem. By utilizing Rust’s high performance and high-level language features we aim to construct a framework for iterative development and speed.
+Немного терминологии
 
-Some terminology
+Прежде чем запрыгнуть в "ржавую машину"(rusty-machine) нам нужна некоторая терминология.
 
-Before we jump into rusty-machine we’ll need some terminology.
+В машинном обучение мы имеем модели. Эти модели могут использоваться для разъяснения паттернов, которые присутствуют в некоторых данных. 
 
 In Machine Learning we have Models. These models can be used to explain a pattern which is present in some data. The Logistic Regression model is an example of this. By giving the model some data we can train it and have it learn the underlying pattern. The model can then be used to predict new patterns from data that it hasn’t seen before.
 
