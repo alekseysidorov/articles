@@ -97,7 +97,7 @@ pub trait SupModel<T,U> {
 ```
 Типаж, представленный выше описывает специфический тип обучения - обучение с учителем. Это означает, что эта модель тренируется с помощью некоторых примеров выходных данных (так называемых целей) также, как с входными. Так-же существует типаж для обучения без учителя, который выглядит очень похоже (за исключением того, что мы не имеем никаких целей).
 
-When a user wants to use a model they train and predict from the model via this trait. This is the essence of our consistent API - all models are accessed via the same core methods. We balance this rigid access by allowing the models themselves to be very customisable. Let’s consider our Logistic Regression model.
+Когда пользователи хотя использовать модель они тренируют её и делают прогнозы через этот типаж. Это суть нашего консистентного API - все модели поступны через одни и те же методы. ?We balance this rigid acces? позволяя самим моделям быть очень настраиваемыми. Давай рассмотрим нашу Логистическую Регрессию.
 
 ```rust
 pub struct LogisticRegressor<A>
