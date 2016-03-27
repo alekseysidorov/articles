@@ -108,11 +108,11 @@ pub struct LogisticRegressor<A>
 }
 ```
 
-This looks a little messy… Here A is a generic type. The line beginning where specifies that A must implement the OptimAlgorithm trait. This is the trait for Gradient Descent algorithms (which is poorly named, my apologies!). The BaseLogisticRegressor contains the parameters, β, and other core methods for logistic regression.
+Это кажется немного неаккуратным... Здесь A это обобщенный тип. Where конкретизирует, что A должно реализовывать типаж OptimAlgorithm. Это типаж для алгоритма градиентного спуска (который, по моему мнению назван неудачно). BaseLogisticRegressor содержит параметры, β, и общие методы для логистической регрессии.
 
-The LogisticRegressor struct allows any Gradient Descent algorithm that fits the base struct to be used. There are a number of built-in algorithms (Stochastic GD, etc.) or alternatively the user can create their own and plug them in. This relationship is two-fold - developers can create their own models and utilize the existing gradient descent algorithms.
+Структура LogisticRegressor позволяет использовать любой алгоритм градиентного спуска, который подходит базовой структуре для использования. Имеется набор встроенных алгоритмов (Стохастический Градиентный спуск, и так далее) или в качестве альтернативы пользователь может создать собственный. Эта связь двойная: разработчики могут создавать свои собственные модели и использовать существующие алгоритмы градиентного спуска.
 
-Of course this doesn’t end with logistic regression and gradient descent. This flexibility and customisation is an aim throughout rusty-machine. Let’s consider a slightly more involved example:
+Разумеется это всё не заканчивается логистической регрессией и градиентным спуском. Такая гибкость и настраиваемость является целью для всей rusty-machine. Давайте рассмотрим немного более сложный пример:
 
 ```rust
 pub struct GenLinearModel<C: Criterion> {
@@ -130,25 +130,26 @@ pub trait Criterion {
 
 }
 ```
+Типаж Criterion может быть использован для специализации Обобщенной Линейной Модели. Мы предоставляем связующую функцию и некоторые другие, являющиеся зависимыми от выборки, и эта самая модель делает тяжелую работу. Разумеется, имеется несколько встроенных критериев, к примеру, Пуассон или Биноминальная регрессия. Но главная цель такого дизайна в том, чтобы предоставлять пользователю полный полный контроль над Обобщенной Линейной Моделью без необходимости писать куски когда для тренировки модели в каждом конкретном случае.
 
-Our Criterion can be used to specify a Generalized Linear Model. We provide a link function and some other functions which are distribution dependent, and the model does the heavy lifting. Of course there are some built in Criterion, e.g. Poisson or Binomial regression. But the primary purpose of this design is to allow the user to have full control over the GLM without needing to write chunks of code to train the model in each case.
+На каком мы этапе сейчас?
 
-Where are we now?
+В rusty-machine на данный момент имеется достаточно полная библиотека линейонй алгебры. Она безусловно не является произведением искусства, но на данный момент, работает достаточно хорошо. Помимо прочего библиотека предоставляет некоторые методы для часто используемых манипуляций с данными.
 
-Rusty-machine currently has a fairly comprehensive linear algebra library. This certainly isn’t state of the art but it is working well enough (for now…). The linear algebra library also provides some common data manipulation methods.
+С точки зрения машинного обучения библиотека растет и будет продолжать делать это. На данный момент имеется поддержка для следующих вещей:
 
-In terms of machine learning the library is growing and will continue to do so. Currently there is support for:
+* Линейная регрессия
+* Логистическая регрессия
+* Обобщенная линейная модель
+* K-Means (метод k-средних)
+* Нейронные сети
+* Gaussian Process Regression (? А про него есть вообще русская литература) ??? Метод Гаусса-Ньютона
+* Метод опорных векторов
 
-Linear Regression
-Logistic Regression
-Generalized Linear Models
-K-Means Clustering
-Neural Networks
-Gaussian Process Regression
-Support Vector Machines
-All of the above aim to provide a wealth of customisation. For example, different kernels for GPs, different cost and activation functions for Neural Networks, and more. In addition to those that are built-in it is also easy to create your own kernels/cost functions and use these within the existing models.
+Всё вышеперечисленное должно иметь богатые возможности для настройки. К примеру, различные ядра для метода Gaussian Process, различные веса и функции активации для нейронных сетей и так далее. В добавлении ко всему также легко создавать свои собственные ядра/весовые функции и использовть это с существующими моделями:
 
-Next steps
+Дальнейшие шаги
+
 
 There is definitely room for improvement on existing algorithms - both for performance and introducing some more modern techniques. There will also need to be:
 
