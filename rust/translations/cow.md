@@ -152,17 +152,21 @@ Cow<'a, B> имеет два обобщенных параметра: время
  * ToOwned - B должен реализовывать типаж ToOwned
  * ?Sized - Размер типа B может быть неизвестен во время компиляции. Это не имеет значения в нашем случае, но это означает, что trait object'ы могут использоваться вместе с Cow.
 
-There’s two variants
-Borrowed(&'a B) - a reference to some object of type B. The lifetime of this reference is the same as the lifetime bound.
-Owned(B::Owned) - The ToOwned trait has an associated type Owned. This variant holds that type.
-We want to have a Cow<'a, str>, which will look something like this after type substitution.
+Существует два варианта значения. (? как бы это по русски записать?)
+* Borrowed(&'a B) - ссылка на некоторый объект типа B. Время жизни этой ссылки такое же как время жизни связанного значения.
+* Owned(B::Owned) - ToOwned типаж имеет ассоциированный типа Owned. Этот вариант сохраняет этот тип. 
+Мы же хотим иметь Cow<'a, str>, который бы выглядил примерно так после подстановки типа:
 
+```rust
 enum Cow<'a, str> {
     Borrowed(&'a str),
     Owned(String),
 }
-In short, Cow<'a, str> will be either a &str with the lifetime 'a, or it will be a String which is not bound by that lifetime. This sounds great for the Token type! It will be able to hold either a &str or a String.
+```
 
+Короче говоря Cow<'a, str> будет либо &str с временем жизни 'a либо он будет представлять собой String, который не связян с этим временем жизни. Это звучит круто для нашего Token'а. Он будет иметь возможность хранить как &str, так и String.
+
+```rust
 struct Token<'a> {
     raw: Cow<'a, str>
 }
@@ -173,12 +177,15 @@ impl<'a> Token<'a> {
     }
 }
 
-// Create the tokens.
+// создание этих токенов
 let token = Token::new(Cow::Borrowed("abc123"));
 let secret: String = secret_from_vault("api.example.io");
 let token = Token::new(Cow::Owned(secret));
-A Token can now be created with either an owned or a borrowed type, but we’ve lost the API ergonomics! Into can do the same thing for our Cow<'a, str> as it did for a simple String earlier. The final Token implementation looks like this:
+```
 
+Теперь Token может быть создан с помощью заимствованного(borrowed) или собственного(owned) типа, но мы потеряли эргономичность API. Into может сделать такие же улучшения для нашего Cow<'a, str>, как сделал для простого String ранее. Финальная реализация Token'а выглядит так:
+
+```rust
 struct Token<'a> {
     raw: Cow<'a, str>
 }
@@ -191,11 +198,15 @@ impl<'a> Token<'a> {
     }
 }
 
-// Create the tokens.
+// создаем токены.
 let token = Token::new("abc123");
 let token = Token::new(secret_from_vault("api.example.io"));
-Now, a token can be created ergonomically from either a &str or a String. The lifetime bound on Token is no longer a problem for escaping stack frames when created with a String or &'static str; it can even be sent across threads!
+```
 
+Теперь токен может быть прозрачно создан как из &str так и из String. Связанное с Token'ом время жизни больше не проблема для 
+for escaping stack frames when created with a String or &'static str. Можно даже пересылать Token между потоками!
+
+```rust
 let raw = String::from("abc");
 let token_owned = Token::new(raw);
 let token_static = Token::new("123");
@@ -204,32 +215,38 @@ thread::spawn(move || {
     println!("token_owned: {:?}", token_owned);
     println!("token_static: {:?}", token_static);
 }).join().unwrap();
-Trying to send a token with a non-'static ref will fail.
-
-// Make a ref with non-'static lifetime
+```
+Попытка отправить токен с нестатической ссылкой потерпит неудачу.
+```rust
+// Сделаем ссылку с нестатическим временем жизни
 let raw = String::from("abc");
 let s = &raw[..];
 let token = Token::new(s);
 
-// This won't work
+// Это не будет работать
 thread::spawn(move || {
     println!("token: {:?}", token);
 }).join().unwrap();
-Indeed, the above example fails with
+```
 
+Действительно, пример выше не компилируется с ошибкой:
+```
 error: `raw` does not live long enough
-If you’re hungry for more examples, please check out the PagerDuty API client which uses Cow extensively.
+```
+Если вы жаждите больше примеров, пожалуйста, посмотрите на PagerDuty API client, который интенсивно использует Cow.
 
-Thanks for reading!
+Спасибо за чтение!
 
-Notes
+Примечания
 
 1
 
-If you were to go looking for the Into<String> impl for &str and String, you wouldn’t find it. This is because there’s a generic implementation of Into for types implementing From. It’s often said that From implies Into, and it’s because of this blanket impl. The whole thing looks like this
+Если вы пойдете искать реализации Into<String> для &str и String, вы не найдете их. Это потому, что существует общая реализация Into для типов, реализующих типаж From. Часто говорят, что From реализует Into and it’s because of this blanket impl. Всё это выглядит следующим образом.
 
+```rust
 impl<T, U> Into<U> for T where U: From<T> {
     fn into(self) -> U {
         U::from(self)
     }
 }
+```
