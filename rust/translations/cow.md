@@ -95,21 +95,24 @@ let secret = secret_from_vault("api.example.io");
 let token = Token::new(&secret[..]); // неэффективно!
 ```
 
-There is a way that new can accept both forms with no allocation needed in the case of a String.
+Существует способ, как заставить new принимать обе формы без необходимости в выделении памяти в случае String.
 
-Introducing Into
+#### Представляем Into
 
-The standard libary has a trait Into which will help our new problem. The trait definition looks like this:
+В стандартной библиотеке существует типаж Into, который поможет решит нашу проблему с new. Определение типажа выглядит так:
 
+```rust
 pub trait Into<T> {
     fn into(self) -> T;
 }
-The into function it defines is pretty straight-forward; it consumes self (the thing implementing Into) and returns a T (note the type parameter on the trait definition). Here’s how it’s used:
+```
+Функция into определяется довольно просто: она забирает self (нечто, реализующее Into) и возвращает T(параметр типа в определении типажа). Здесь показано как это использовать:
 
+```rust
 impl Token {
-    /// Create a new token
+    /// Создание нового токена
     ///
-    /// Can be passed either a &str or String
+    /// Может принимать как &str так и String
     pub fn new<S>(raw: S) -> Token
         where S: Into<String>
     {
@@ -122,27 +125,33 @@ let token = Token::new("abc123");
 
 // String
 let token = Token::new(secret_from_vault("api.example.io"));
-There’s a lot going on here. First, the function now has a generic type parameter, S. The argument raw has this type. The line reading where S: Into<String> limits the types of S to anything that implements Into<String>. Since the standard library already provides Into<String> for &str and for String, our use case is handled. 1
+```
+Здесь много чего происходит. Во первых, функция сейчас имеет обобщеный параметр S. Аргумент row имеет данный тип. 
+Строчка where S: Into<String> ограничивает возможные типы S до тех, которые реализуют Into<String>. Поскольку стандартная библиотека уже предоставляет Into<String> для &str и String наш случай обрабатывается.
 
-Although the ergonomics have been greatly improved, there’s still an issue with this API. Passing a &str to new requires an allocation to store the value as a String.
+Хотя удобство было значительно улучшено, в данном API до сих пор присутствует изъян. Передача &str в new требует выделения памяти для хранения значения как String
 
-Cow to the rescue
+### Cow для спасения
 
-The standard library has a type std::borrow:Cow which enables us to keep the ergonomics of the Into<String> API while also allowing for borrowed values like a &str.
+В стандартной библиотеке есть тип std::borrow::Cow, который позволяет нам сохранив удобство Into<String> API также разрешая владеть значениями типа &str.
 
-Here’s the scary-looking definition of Cow:
+Вот страшно выглядящее определение Cow:
 
+```rust
 pub enum Cow<'a, B> where B: 'a + ToOwned + ?Sized {
     Borrowed(&'a B),
     Owned(B::Owned),
 }
-Let’s break that down.
+```
 
-Cow<'a, B> has two generic parameters; a lifetime 'a, and some type B
-B is constrained to 'a + ToOwned + ?Sized
-'a - B cannot contain a lifetime shorter than 'a
-+ ToOwned - B must implement ToOwned.
-+ ?Sized - The size of B can be unknown at compile time. This isn’t relevant for our use case, but it means that trait objects may be used with the Cow type.
+Давайте разберемся.
+
+Cow<'a, B> имеет два обобщенных параметра: время жизни 'a и некоторый тип B, который ограничен до 'a + ToOwned + ?Sized.
+
+ * 'a - B не может иметь время жизни короче, чем 'a
+ * ToOwned - B должен реализовывать типаж ToOwned
+ * ?Sized - Размер типа B может быть неизвестен во время компиляции. Это не имеет значения в нашем случае, но это означает, что trait object'ы могут использоваться вместе с Cow.
+
 There’s two variants
 Borrowed(&'a B) - a reference to some object of type B. The lifetime of this reference is the same as the lifetime bound.
 Owned(B::Owned) - The ToOwned trait has an associated type Owned. This variant holds that type.
