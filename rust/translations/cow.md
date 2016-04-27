@@ -14,33 +14,40 @@ excerpt:
 
 ### От &str к Cow
 
-В одним из первых моих кодов на Rust'е была структура с &str полем. Как вы понимаете, borrow checker не дал сделать мне множество вещей и эргономичность API было ограниченым.
+В одним из первых моих кодов на Rust'е была структура с &str полем. Как вы понимаете, borrow checker не дал сделать мне множество вещей и выразительность API была ограниченой. Эта статья нацелена на демонстрацию проблем, возникающих при хранении сырых &str ссылок в полях структур и показывает некоторое промежуточные API, которые улучшают удобство, но при этом недостаточно эффективны и в конце будет представлена реализация, которая одновременно обладает выразительностью и хорошей эффективностью.
 
-Some of the first Rust code I wrote was a struct with a &str field. 
-As you might imagine, the borrow checker didn’t let me do a lot of things, and the API ergonomics were limited. This article aims to demonstrate the issues with having raw &str references in structs, introduce some intermediate APIs that alleviate the ergonomics but aren’t necessarily efficient, and end with an implementation that is both ergonomic and efficient.
+Скажем мы делаем библиотеку для example.com API. Каждый вызов API должен быть подписан токеном. 
+Определение токена может выглядить примерно так:
 
-Let’s say we’re making a library for the example.com API. Each API call must be authenticated with a token. A token definition might look like this:
-
-/// Token for example.io API
+```rust
+/// Token для example.io API
 pub struct Token<'a> {
     raw: &'a str,
 }
-And maybe there’s an impl for creating a token given a &str.
+```
 
+И должно быть существует метод для создания токена из &str.
+
+```rust
 impl<'a> Token<'a> {
     pub fn new(raw: &'a str) -> Token<'a> {
         Token { raw: raw }
     }
 }
-This Token impl works really well for &'static str. However, what if a user doesn’t want to embed their authentication secret in the binary? Maybe the secret is loaded from a vault at run time. We might want to write some code like this.
+```
 
+Такой токен работает хорошо лишь для &'static str. Однако, что если пользователь не захочет встраивать свой секретный ключ в бинарник? Быть может ключ загрузили из хранилища в процессе выполнения. Мы могли бы захотеть писать скорее такой код.
+```rust
 /// Imagine that this function exists
 let secret: String = secret_from_vault("api.example.io");
 let token = Token::new(&secret[..]);
-This implementation has a big limitation; token cannot outlive secret, and that means token can’t escape this stack frame. What if Token just held a String? That would get rid of the lifetime parameter making Token a purely owned type.
+```
 
-Token and its new function look like this after making the change.
+Эта реализация имеет большое ограничение: токен не может пережить секретный ключ и это значит, что токен не может быть извлечен из стека. Что если просто токен будет удерживать String? Это могло бы избавить от указания параметра времени жизни, сделав Token чисто собственным(owned) типом.
 
+Token и его new функция выглядит так после внесения изменений.
+
+```rust
 struct Token {
     raw: String,
 }
@@ -50,33 +57,44 @@ impl Token {
         Token { raw: raw }
     }
 }
+```
+
+Те места, где используется String должны быть исправлены.
+
 The use case where a String is provided has been fixed.
 
-// this works now
+```rust
+// Это работает сейчас
 let token = Token::new(secret_from_vault("api.example.io"))
-However, this has actively harmed the usability of providing a &'str. For example, this won’t compile:
-
-// doesn't compile
+```
+Однако это вредит удобству использования &'str. К примеру, это не будет компилироваться:
+```rust
+// не собирается
 let token = Token::new("abc123");
-The consumer of this API would need to manually convert that into a String first.
-
+```
+Пользователь этого API должен явным образом преобразовать &'str в String.
+```rust
 let token = Token::new(String::from("abc123"));
-If new took a &str instead of a String, it could hide String::from in the implementation. However, passing in a String would become less ergonomic, and it would involve and additional heap allocation. Let’s see what that looks like:
+```
+Можно использовать &str вместо String, срятав String::from в реализацию, однако в случае String это будет менее удобно и потребует дополнительного выделения памяти в куче. Давайте посмотрим как это выглядит. 
 
-// new function now looks like so
+```rust
+// функция new выглядит как-то так
 impl Token {
     pub fn new(raw: &str) -> Token {
         Token(String::from(raw))
     }
 }
 
-// &str can be passed seamlessly
+// &str может передана бесшовно
 let token = Token::new("abc123");
 
-// Can still use a String, but it needs to be sliced, and
-// the new fn will copy it
+// По прежднему можно использовать String, но необходимо пользоваться срезами
+// и функция new должна будет скопировать данные из них
 let secret = secret_from_vault("api.example.io");
-let token = Token::new(&secret[..]); // inefficent!
+let token = Token::new(&secret[..]); // неэффективно!
+```
+
 There is a way that new can accept both forms with no allocation needed in the case of a String.
 
 Introducing Into
