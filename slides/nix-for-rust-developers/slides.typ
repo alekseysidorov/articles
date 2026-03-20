@@ -105,7 +105,8 @@
   title: [`nix develop`],
   kicker: [Workflow],
   note: [
-    clone → `nix develop` → работаешь
+    `nix develop` — это вход в описанную среду проекта.
+    Зашли в репозиторий, подняли её и дальше работаете как обычно.
   ],
   body: [
     #bash-code(

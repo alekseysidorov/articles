@@ -18,7 +18,7 @@
 // not so wide that it steals content space.
 #let sidebar-w = 4.4cm
 #let sidebar-gap = 0.9cm
-#let logo-size = sidebar-w * 0.55
+#let logo-size = sidebar-w * 0.75
 
 #let page-margins = (
   left: sidebar-w + sidebar-gap,
