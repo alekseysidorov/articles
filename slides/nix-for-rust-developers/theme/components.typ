@@ -173,15 +173,12 @@
         list.item(item)
       }
     ]
-  ]
-
-  #if aside != none [
-    #place(
-      right + bottom,
-      dx: -0.2cm,
-      dy: -0.15cm,
-      accent-panel(width: 7cm)[#aside],
-    )
+    #if aside != none [
+      #v(1.1em)
+      #align(right)[
+        #accent-panel(width: 7cm)[#aside]
+      ]
+    ]
   ]
 ]
 
@@ -244,13 +241,13 @@
 ) = slide[
   #block(width: width)[
     #section-kicker[#kicker]
-    #v(0.5em)
+    #v(0.35em)
     #section-title[#title]
     #if note != none [
-      #v(0.5em)
-      #muted-copy[#note]
+      #v(0.35em)
+      #text(size: 16pt, fill: text-muted)[#note]
     ]
-    #v(0.85em)
+    #v(0.6em)
     #code-block[#body]
   ]
 ]

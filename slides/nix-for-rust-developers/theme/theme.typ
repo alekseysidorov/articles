@@ -18,7 +18,7 @@
 // not so wide that it steals content space.
 #let sidebar-w = 4.4cm
 #let sidebar-gap = 0.9cm
-#let logo-size = sidebar-w * 0.82
+#let logo-size = sidebar-w * 1.18
 
 #let page-margins = (
   left: sidebar-w + sidebar-gap,
@@ -64,10 +64,11 @@
     dx: sidebar-w,
     line(start: (0pt, 0pt), end: (0pt, 100%), stroke: border + 0.7pt),
   )
-  // Nix logo — vertically centred in the sidebar
+  // Nix logo — крупно и строго по центру сайдбара
   place(
     horizon + left,
     dx: (sidebar-w - logo-size) / 2,
+    dy: -logo-size / 2,
     image(
       "../assets/nixos-logomark-rainbow-gradient-recommended.svg",
       width: logo-size,
