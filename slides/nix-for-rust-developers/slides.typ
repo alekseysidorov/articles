@@ -1,308 +1,347 @@
-// ─── Официальная палитра NixOS (из branding guide, OKLCH) ───────────────────
-#let nix-dark-blue  = oklch(55%, 0.12, 264deg)  // "Afghani Blue"  — тёмный синий логотипа
-#let nix-light-blue = oklch(75%, 0.09, 240deg)  // "Argentinian Blue" — светлый синий логотипа
-#let nix-white      = white
-#let nix-black      = black
+#import "theme/theme.typ": *
+#import "theme/components.typ": *
 
-// ─── Ширина сайдбара для контентных слайдов ─────────────────────────────────
-#let sidebar-w = 1.4cm
+#show: deck
 
-// ─── Фон контентного слайда: тёмно-синяя полоса слева ───────────────────────
-#let content-bg = context {
-  place(
-    top + left,
-    rect(width: sidebar-w, height: 100%, fill: nix-dark-blue)
-  )
-}
-
-// ─── Базовый текст ───────────────────────────────────────────────────────────
-// Route 159 — официальный шрифт NixOS (есть в nixpkgs как часть пакета route159)
-// Если шрифт не найден, Typst молча упадёт на fallback
-#let body-font  = "Route 159"
-#let label-font = "Jura"          // вспомогательный шрифт из branding guide
-
-// ─── Вспомогательные функции ─────────────────────────────────────────────────
-
-// Заголовок слайда
-#let slide-title(content) = {
-  text(
-    font: label-font,
-    size: 28pt,
-    weight: "bold",
-    fill: nix-dark-blue,
-    upper(content)
-  )
-  v(0.3em)
-  line(length: 100%, stroke: nix-light-blue + 1.5pt)
-  v(0.5em)
-}
-
-// Разделительная линия между блоками
-#let divider() = {
-  v(0.5em)
-  line(length: 100%, stroke: (paint: nix-light-blue, thickness: 0.5pt, dash: "dashed"))
-  v(0.5em)
-}
-
-// Метка-таг в стиле NixOS (для punchline'ов и терминов)
-#let tag(content) = {
-  box(
-    fill: nix-dark-blue,
-    inset: (x: 6pt, y: 3pt),
-    radius: 2pt,
-    text(font: label-font, size: 10pt, fill: white, weight: "bold", content)
-  )
-}
-
-// ═══════════════════════════════════════════════════════════════════════════════
-// СЛАЙД 0 — ЗАГЛАВНЫЙ (полностью тёмно-синий)
-// ═══════════════════════════════════════════════════════════════════════════════
-#set page(
-  paper: "presentation-16-9",
-  margin: 0pt,
-  fill: nix-dark-blue,
-  background: none,
+#title-slide(
+  title: [Nix для Rust-разработчика],
+  subtitle: [Как сделать среду, команды и CI частью проекта],
+  author: [Алексей Сидоров · Ведущий Rust-разработчик],
+  year: [2025],
 )
-#set text(font: body-font, size: 20pt, fill: nix-white)
 
-#v(1fr)
-#align(center)[
-  // Светло-синяя декоративная линия сверху
-  #line(length: 55%, stroke: nix-light-blue + 1.5pt)
-  #v(0.8em)
+#big-idea(
+  title: [У проекта должен быть один источник правды.],
+  kicker-text: [Thesis],
+  note: [
+    Для Rust-проекта проблема обычно не в `cargo`.
+    Проблема в том, что вокруг него быстро вырастает второй проект — окружение.
+  ],
+)
 
-  // Основной заголовок
-  #text(
-    font: label-font,
-    size: 38pt,
-    weight: "bold",
-    fill: nix-white,
-  )[Nix для Rust-разработчиков]
-
-  #v(0.6em)
-
-  // Подзаголовок
-  #text(
-    size: 18pt,
-    fill: nix-light-blue,
-  )[Как один декларативный слой меняет dev experience]
-
-  #v(1.2em)
-  #line(length: 55%, stroke: (paint: nix-white, thickness: 0.5pt, dash: "dashed"))
-  #v(1.2em)
-
-  // Докладчик
-  #text(font: label-font, size: 20pt, fill: nix-white, weight: "bold")[
-    Алексей Сидоров
-  ]
-  #v(0.3em)
-  #text(size: 15pt, fill: nix-light-blue)[
-    Ведущий Rust разработчик
-  ]
-
-  #v(1.2em)
-  #line(length: 55%, stroke: nix-light-blue + 1.5pt)
-]
-#v(1fr)
-#align(right)[
-  #pad(right: 1.5cm, bottom: 0.6cm)[
-    #text(font: label-font, size: 12pt, fill: nix-light-blue)[2025]
-  ]
-]
-
-
-// ═══════════════════════════════════════════════════════════════════════════════
-// КОНТЕНТНЫЕ СЛАЙДЫ — переключаем set page
-// ═══════════════════════════════════════════════════════════════════════════════
-#set page(
-  paper: "presentation-16-9",
-  margin: (
-    left:   sidebar-w + 1.4cm,
-    right:  1.6cm,
-    top:    1.2cm,
-    bottom: 0.9cm,
+#explain-slide(
+  kicker-text: [Problem],
+  title: [Фрагментированная среда],
+  lead: [
+    Один проект живёт сразу в нескольких местах.
+  ],
+  points: (
+    [`Cargo.toml` знает про crates],
+    [`rust-toolchain`, `brew`, `apt`, `scripts/` живут отдельно],
+    [CI проверяет не совсем то же самое, что вы запускаете локально],
   ),
-  fill: nix-white,
-  background: content-bg,
-)
-#set text(font: body-font, size: 18pt, fill: nix-black)
-#set list(marker: text(fill: nix-dark-blue)[▸])
-
-
-// ═══════════════════════════════════════════════════════════════════════════════
-// СЛАЙД 1 — ПРОБЛЕМА
-// ═══════════════════════════════════════════════════════════════════════════════
-#pagebreak()
-
-#slide-title[Проблема]
-
-#text(size: 19pt, style: "italic", fill: nix-dark-blue)[
-  У проекта нет единого описания среды разработки
-]
-
-#v(0.7em)
-
-#grid(
-  columns: (1fr, 1fr),
-  gutter: 1.2em,
-  [
-    #text(weight: "bold")[Каждый делает по-своему:]
-    #v(0.4em)
-    - `rustup` — управляет тулчейном
-    - `cargo install` — глобальные инструменты
-    - `brew` / `apt` — системные зависимости
-  ],
-  [
-    #text(weight: "bold")[И ещё:]
-    #v(0.4em)
-    - CI YAML — своя логика сборки
-    - `scripts/` — разрозненные скрипты
-    - `README` — «установи вот это и вот то»
+  aside: [
+    #text(size: 11pt, weight: "medium", fill: accent, upper([Symptoms]))
+    #v(0.45em)
+    #body-copy[
+      onboarding долгий,
+      README устаревает,
+      локально работает — в CI падает
+    ]
   ],
 )
 
-#v(1fr)
-#align(right)[
-  #text(
-    font: label-font,
-    size: 13pt,
-    fill: nix-light-blue,
-    style: "italic",
-  )[Всё это расходится со временем]
-]
-
-
-// ═══════════════════════════════════════════════════════════════════════════════
-// СЛАЙД 2 — ЧТО ДАЁТ NIX
-// ═══════════════════════════════════════════════════════════════════════════════
-#pagebreak()
-
-#slide-title[Что даёт Nix]
-
-#text(size: 19pt, style: "italic", fill: nix-dark-blue)[
-  Один декларативный слой для всей среды разработки
-]
-
-#v(0.7em)
-
-#grid(
-  columns: (1fr, 1fr),
-  gutter: 1.4em,
-  [
-    #text(weight: "bold")[Аналогия:]
-    #v(0.4em)
-    - `venv` решает окружение Python
-    - `nvm` / `rustup` — версию языка
-    - *Nix решает весь dev environment*
-
+#comparison-slide(
+  title: [Cargo vs Nix],
+  left-title: [Cargo],
+  left-body: [
+    #text(size: 18pt, weight: "medium")[Сборка Rust-кода]
     #v(0.5em)
-    Toolchain, системные зависимости, checks, команды проекта
+    #muted-copy[
+      crates, features, workspace, lockfile
+    ]
   ],
-  [
-    #text(weight: "bold")[Ключевые свойства:]
-    #v(0.4em)
-    - *Воспроизводимость* — одинаково у всех и в CI
-    - *Герметичность* — сборка не зависит от системы
-    - Работает без NixOS
-    - Работает на macOS и Linux
+  right-title: [Nix],
+  right-body: [
+    #text(size: 18pt, weight: "medium")[Среда и проверки]
+    #v(0.5em)
+    #muted-copy[
+      toolchain, system libs, команды проекта, CI checks
+    ]
   ],
-)
-
-#v(1fr)
-#align(right)[
-  #tag[Nix не требует NixOS]
-]
-
-
-// ═══════════════════════════════════════════════════════════════════════════════
-// СЛАЙД 3 — СТРУКТУРА FLAKE
-// ═══════════════════════════════════════════════════════════════════════════════
-#pagebreak()
-
-#slide-title[Структура flake.nix]
-
-#text(size: 19pt, style: "italic", fill: nix-dark-blue)[
-  Это не страшная магия — просто описание входов и выходов
-]
-
-#v(0.7em)
-
-#grid(
-  columns: (1fr, 1fr),
-  gutter: 1.6em,
-  [
-    #text(font: label-font, size: 17pt, weight: "bold", fill: nix-dark-blue)[`inputs`]
-    #text(size: 15pt, fill: rgb("#555"))[Зависимости: nixpkgs, инструменты]
-
-    #v(0.8em)
-
-    #text(font: label-font, size: 17pt, weight: "bold", fill: nix-dark-blue)[`devShells`]
-    #text(size: 15pt, fill: rgb("#555"))[`nix develop` — среда разработки]
-  ],
-  [
-    #text(font: label-font, size: 17pt, weight: "bold", fill: nix-dark-blue)[`checks`]
-    #text(size: 15pt, fill: rgb("#555"))[`nix flake check` — hermetic CI checks]
-
-    #v(0.8em)
-
-    #text(font: label-font, size: 17pt, weight: "bold", fill: nix-dark-blue)[`packages`]
-    #text(size: 15pt, fill: rgb("#555"))[`nix build` / `nix run` — команды проекта]
+  note: [
+    `cargo build` описывает сборку.
+    `nix` описывает контекст, в котором сборка вообще возможна.
   ],
 )
 
-#divider()
-
-#align(center)[
-  #text(size: 15pt, fill: rgb("#444"))[
-    CI should be an *executor*, not the source of truth
-  ]
-]
-
-
-// ═══════════════════════════════════════════════════════════════════════════════
-// СЛАЙД 4 — UX + LIVE DEMO
-// ═══════════════════════════════════════════════════════════════════════════════
-#pagebreak()
-
-#slide-title[UX и переход к демо]
-
-#grid(
-  columns: (1fr, 1fr),
-  gutter: 1.4em,
-  [
-    #text(weight: "bold")[Войти в среду:]
-    #v(0.2em)
-    #text(font: label-font, fill: nix-dark-blue)[`nix develop`]
-
-    #v(0.6em)
-    #text(weight: "bold")[Запустить проверки:]
-    #v(0.2em)
-    #text(font: label-font, fill: nix-dark-blue)[`nix flake check`]
-  ],
-  [
-    #text(weight: "bold")[Запустить команду проекта:]
-    #v(0.2em)
-    #text(font: label-font, fill: nix-dark-blue)[`nix run .#lint`]
-
-    #v(0.6em)
-    #text(weight: "bold")[Любой инструмент без установки:]
-    #v(0.2em)
-    #text(font: label-font, fill: nix-dark-blue)[`nix run nixpkgs#jq`]
+#big-idea(
+  kicker-text: [What is a flake],
+  title: [Flake — это воспроизводимая точка входа в проект.],
+  note: [
+    `flake.nix` описывает, что проект экспортирует.
+    `flake.lock` фиксирует входы во времени.
   ],
 )
 
-#divider()
+#code-slide(
+  title: [`nix develop`],
+  kicker-text: [Workflow],
+  body: [
+$ git clone <repo>
+#command("$ nix develop", accent-line: true)
+$ cargo test
+  ],
+  note: [
+    Для нового разработчика это означает:
+    clone → enter shell → work.
+  ],
+)
 
-#text(size: 17pt)[
-  #tag[direnv] автоматически активирует среду при входе в папку
-]
+#code-slide(
+  title: [Минимальный CI],
+  kicker-text: [Workflow],
+  body: [
+- uses: cachix/install-nix-action@v27
+#command("- run: nix flake check", accent-line: true)
+  ],
+  note: [
+    CI перестаёт быть местом, где руками дублируют логику проекта.
+  ],
+)
 
-#v(1fr)
-#align(center)[
-  #text(
-    font: label-font,
-    size: 34pt,
-    weight: "bold",
-    fill: nix-dark-blue,
-  )[→ live demo]
-]
+#big-idea(
+  kicker-text: [Demo],
+  title: [Дальше важнее не теория, а live demo.],
+  note: [
+    Посмотрим на реальный проект:
+    `devShell`, `checks`, `apps` и то, как это упрощает локальную разработку.
+  ],
+)
+
+#final-slide(
+  title: [Reproducibility becomes automated.],
+  note: [
+    Не “у нас где-то в README написано, как это повторить”,
+    а “проект уже умеет поднять среду, запустить команды и прогнать проверки”.
+  ],
+)
+
+// APPENDIX
+
+#big-idea(
+  kicker-text: [Appendix],
+  title: [Дополнительные материалы],
+  note: [
+    Эти слайды не обязательны для основного тайминга.
+    Их удобно держать после live demo для вопросов и углубления.
+  ],
+)
+
+#code-slide(
+  title: [Что такое flake на практике],
+  body: [
+flake.nix
+flake.lock
+
+outputs = {
+  devShells = ...
+  checks    = ...
+  packages  = ...
+  apps      = ...
+}
+  ],
+  note: [
+    Важная часть — не синтаксис, а то,
+    что у проекта появляется единое описание среды.
+  ],
+)
+
+#explain-slide(
+  kicker-text: [devShell],
+  title: [`nix develop` как нормальная точка входа],
+  lead: [
+    Вместо инструкции “поставь вот это всё руками”
+    у проекта появляется одна команда для входа в среду.
+  ],
+  points: (
+    [правильный Rust toolchain],
+    [`clippy`, `rustfmt`, `taplo`, `typos`],
+    [`openssl`, `protobuf`, `pkg-config`, `clang`],
+  ),
+)
+
+#explain-slide(
+  kicker-text: [apps],
+  title: [`nix run` как launcher команд],
+  lead: [
+    Проект может экспортировать стандартные точки входа,
+    а не рассчитывать на набор shell-скриптов и устных договорённостей.
+  ],
+  points: (
+    [`nix run .#lint`],
+    [`nix run .#test`],
+    [`nix run nixpkgs#jq`],
+  ),
+)
+
+#comparison-slide(
+  title: [Without Nix / With Nix],
+  left-title: [Without Nix],
+  left-body: [
+    #text(size: 18pt, weight: "medium")[Среда описана неявно]
+    #v(0.55em)
+    #muted-copy[
+      README, CI YAML, системные пакеты,
+      локальные скрипты и знания команды
+    ]
+  ],
+  right-title: [With Nix],
+  right-body: [
+    #text(size: 18pt, weight: "medium")[Среда описана в проекте]
+    #v(0.55em)
+    #muted-copy[
+      `devShells`, `checks`, `apps`, `packages`
+      становятся частью одного описания
+    ]
+  ],
+)
+
+#comparison-slide(
+  title: [Почему это особенно полезно в Rust],
+  left-title: [Простые проекты],
+  left-body: [
+    #text(size: 18pt, weight: "medium")[Иногда можно жить и без этого]
+    #v(0.55em)
+    #muted-copy[
+      если зависимостей мало,
+      CI простой,
+      а окружение почти не отличается по платформам
+    ]
+  ],
+  right-title: [Сложные проекты],
+  right-body: [
+    #text(size: 18pt, weight: "medium")[Окупаемость растёт быстро]
+    #v(0.55em)
+    #muted-copy[
+      `openssl-sys`, `bindgen`, `protobuf`,
+      `rdkafka`, `gstreamer`, macOS vs Linux, сложный CI
+    ]
+  ],
+)
+
+#explain-slide(
+  kicker-text: [CI],
+  title: [Почему Nix хорошо ложится на CI],
+  lead: [
+    Если проверки вынесены в `checks`,
+    CI можно сильно упростить.
+  ],
+  points: (
+    [CI ставит Nix],
+    [CI запускает `nix flake check`],
+    [логика проверок остаётся в проекте, а не в YAML],
+  ),
+)
+
+#code-slide(
+  title: [Идея checks],
+  body: [
+checks = {
+  fmt = ...
+  clippy = ...
+  test = ...
+}
+  ],
+  note: [
+    Один и тот же набор можно запускать локально и в CI.
+  ],
+)
+
+#explain-slide(
+  kicker-text: [Nix vs NixOS],
+  title: [Nix не равен NixOS],
+  lead: [
+    Для Rust-разработчика это важный практический момент.
+  ],
+  points: (
+    [`Nix` — инструмент для пакетов, сред и сборок],
+    [`NixOS` — Linux-дистрибутив, построенный вокруг Nix],
+    [использовать `nix develop` и flakes можно и на macOS, и на обычном Linux],
+  ),
+)
+
+#comparison-slide(
+  title: [Nix vs Docker],
+  left-title: [Docker],
+  left-body: [
+    #text(size: 18pt, weight: "medium")[Где это запускать]
+    #v(0.55em)
+    #muted-copy[
+      контейнер, образ, упаковка и запуск приложения
+    ]
+  ],
+  right-title: [Nix],
+  right-body: [
+    #text(size: 18pt, weight: "medium")[Из чего это собирается]
+    #v(0.55em)
+    #muted-copy[
+      входы, toolchain, системные зависимости,
+      воспроизводимая dev/build-среда
+    ]
+  ],
+  note: [
+    Это разные слои.
+    Они не исключают друг друга.
+  ],
+)
+
+#code-slide(
+  title: [`flake.lock` важен не меньше, чем `Cargo.lock`],
+  body: [
+Cargo.lock  -> фиксирует crates
+flake.lock  -> фиксирует dev/build environment
+  ],
+  note: [
+    По смыслу это lockfile уровнем выше:
+    не только зависимости Rust-кода, а вся рабочая среда.
+  ],
+)
+
+#explain-slide(
+  kicker-text: [Architecture],
+  title: [Почему это вообще работает],
+  lead: [
+    Nix делает зависимости явными
+    и привязывает результаты к их входам.
+  ],
+  points: (
+    [артефакты живут в `/nix/store/...`],
+    [меньше неявных зависимостей от системы],
+    [проще получать одинаковую среду на разных машинах],
+  ),
+)
+
+#code-slide(
+  title: [`direnv` для ежедневной работы],
+  body: [
+.envrc
+
+use flake
+  ],
+  note: [
+    Тогда среда активируется автоматически
+    при входе в директорию проекта.
+  ],
+)
+
+#code-slide(
+  title: [Nix как launcher инструментов],
+  body: [
+nix run nixpkgs#jq
+nix run nixpkgs#ripgrep
+nix run nixpkgs#nodejs
+  ],
+  note: [
+    Удобно и для локальной работы,
+    и для автоматизации без глобальной установки инструментов.
+  ],
+)
+
+#final-slide(
+  title: [Если `cargo build` — это только верхушка айсберга, Nix быстро окупается.],
+  note: [
+    Особенно там, где есть системные зависимости,
+    несколько платформ, сложный CI и дорогой onboarding.
+  ],
+)
