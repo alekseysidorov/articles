@@ -321,3 +321,13 @@ flake.nix
 ```bash
 curl -fsSL https://install.determinate.systems/nix | sh -s -- install
 ```
+
+## Практический пример
+
+А теперь перейдем к разбору реального проекта 
+
+https://github.com/alekseysidorov/tower-http-client
+
+который использует 
+
+https://github.com/alekseysidorov/rust-dev-flake
