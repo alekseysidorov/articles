@@ -18,21 +18,29 @@
 // not so wide that it steals content space.
 #let sidebar-w = 4.4cm
 #let sidebar-gap = 0.9cm
-#let logo-size = sidebar-w * 1.18
 
+#let logo-scale = 1.18
+#let logo-size = sidebar-w * logo-scale
+
+#let margin-right = 1.8cm
+#let margin-top = 1.5cm
+#let margin-bottom = 1.2cm
 #let page-margins = (
   left: sidebar-w + sidebar-gap,
-  right: 1.8cm,
-  top: 1.5cm,
-  bottom: 1.2cm,
+  right: margin-right,
+  top: margin-top,
+  bottom: margin-bottom,
 )
 
 // Title slide has no sidebar, so symmetrical wide margins.
+#let title-margin-x = 2.4cm
+#let title-margin-top = 1.8cm
+#let title-margin-bottom = 1.5cm
 #let title-page-margins = (
-  left: 2.4cm,
-  right: 2.4cm,
-  top: 1.8cm,
-  bottom: 1.5cm,
+  left: title-margin-x,
+  right: title-margin-x,
+  top: title-margin-top,
+  bottom: title-margin-bottom,
 )
 
 // ─── Typography scale (tuned for projector at distance) ─────────────────────
@@ -43,10 +51,16 @@
 #let body-small-size = 18pt
 #let code-size = 18pt
 #let kicker-size = 14pt
+#let page-number-size = 13pt
 
 // ─── Panels ──────────────────────────────────────────────────────────────────
 #let panel-radius = 10pt
 #let panel-inset = 20pt
+#let panel-stroke = border + 0.7pt
+
+// ─── Sidebar placement offsets ───────────────────────────────────────────────
+#let sidebar-logo-offset-y = 1.55cm
+#let sidebar-page-number-offset-y = -0.55cm
 
 // ─── Sidebar background (placed as page background on content slides) ───────
 // Contains: coloured strip, accent border, Nix logo (centred), page number
@@ -62,13 +76,13 @@
   place(
     top + left,
     dx: sidebar-w,
-    line(start: (0pt, 0pt), end: (0pt, 100%), stroke: border + 0.7pt),
+    line(start: (0pt, 0pt), end: (0pt, 100%), stroke: panel-stroke),
   )
   // Nix logo — выровнен по верхнему ритму заголовков, а не по центру слайда
   place(
     top + left,
     dx: (sidebar-w - logo-size) / 2,
-    dy: 1.55cm,
+    dy: sidebar-logo-offset-y,
     image(
       "../assets/nixos-logomark-rainbow-gradient-recommended.svg",
       width: logo-size,
@@ -79,10 +93,10 @@
   // Page number — bottom of sidebar, centred horizontally
   place(
     bottom + left,
-    dy: -0.55cm,
+    dy: sidebar-page-number-offset-y,
     block(width: sidebar-w)[
       #set align(center)
-      #text(size: 13pt, fill: text-muted, weight: "regular")[
+      #text(size: page-number-size, fill: text-muted, weight: "regular")[
         #counter(page).display()
       ]
     ],
@@ -92,7 +106,7 @@
 // ─── Page number helper (used only by the title slide footer) ───────────────
 #let page-number = context align(
   right,
-  text(size: 13pt, fill: text-muted, weight: "regular")[
+  text(size: page-number-size, fill: text-muted, weight: "regular")[
     #counter(page).display()
   ],
 )
@@ -158,7 +172,7 @@
   body,
 )
 
-#let rule(length: 100%) = line(length: length, stroke: border + 0.7pt)
+#let rule(length: 100%) = line(length: length, stroke: panel-stroke)
 
 // ─── Logo helper ─────────────────────────────────────────────────────────────
 #let logo-mark(
