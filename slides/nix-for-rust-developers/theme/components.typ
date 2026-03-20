@@ -208,7 +208,7 @@
     #section-kicker[#kicker]
     #v(0.5em)
     #section-title[#title]
-    #v(0.7em)
+    #v(0.3em)
     #two-cols(
       [
         #compare-card(left-title, [
