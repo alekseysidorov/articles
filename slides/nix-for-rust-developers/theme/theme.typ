@@ -16,11 +16,12 @@
 // ─── Sidebar geometry ────────────────────────────────────────────────────────
 // 3.2cm ≈ 12.6% of slide width — enough to feel like a branded panel,
 // not so wide that it steals content space.
-#let sidebar-w = 3.2cm
+#let sidebar-w = 4.4cm
+#let sidebar-gap = 0.9cm
+#let logo-size = sidebar-w * 0.55
 
-// ─── Page margins (content slides) ──────────────────────────────────────────
 #let page-margins = (
-  left: sidebar-w + 0.65cm,
+  left: sidebar-w + sidebar-gap,
   right: 1.8cm,
   top: 1.5cm,
   bottom: 1.2cm,
@@ -160,7 +161,7 @@
 
 // ─── Logo helper ─────────────────────────────────────────────────────────────
 #let logo-mark(
-  size: 3.5cm,
+  size: logo-size,
   path: "../assets/nixos-logomark-rainbow-gradient-recommended.svg",
 ) = image(
   path,
