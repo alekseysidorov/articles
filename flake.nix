@@ -1,0 +1,82 @@
+{
+  inputs = {
+    # Стабильный канал nixpkgs — источник всех пакетов
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
+    # flake-utils — хелпер, чтобы не писать руками атрибуты для каждой системы
+    # (x86_64-linux, aarch64-linux, aarch64-darwin, x86_64-darwin)
+    flake-utils.url = "github:numtide/flake-utils";
+  };
+
+  outputs =
+    {
+      nixpkgs,
+      flake-utils,
+      ...
+    }:
+    # Оборачиваем всё в eachDefaultSystem — flake автоматически
+    # становится рабочим на всех поддерживаемых платформах
+    flake-utils.lib.eachDefaultSystem (
+      system:
+      let
+        # Пакеты nixpkgs для текущей системы
+        pkgs = nixpkgs.legacyPackages.${system};
+
+        # Вспомогательная функция для сборки слайдов из .typ файла.
+        # Принимает attrset с полями name и src, возвращает derivation,
+        # которая кладёт PDF в $out/slides.pdf.
+        # Использование:
+        #   typstBuild { name = "my-slides"; src = "slides/my-talk/slides.typ"; }
+        typstBuild =
+          { name, src }:
+          pkgs.stdenv.mkDerivation {
+            inherit name;
+            # Берём весь репозиторий как источник —
+            # слайды могут ссылаться на общие ресурсы (шрифты, картинки)
+            src = ./.;
+            buildInputs = [ pkgs.typst ];
+            buildPhase = ''
+              mkdir -p $out
+              typst compile ${src} $out/slides.pdf
+            '';
+            # Фаза install не нужна — PDF уже в $out после buildPhase
+            dontInstall = true;
+          };
+      in
+      {
+        # devShells.default — среда, которая активируется через:
+        #   nix develop .#
+        #   direnv (автоматически, при наличии .envrc с "use flake")
+        #
+        # После входа в среду в PATH появляются все перечисленные инструменты
+        devShells.default = pkgs.mkShell {
+          nativeBuildInputs = with pkgs; [
+            # Компилятор Typst — typst compile / typst watch
+            typst
+            # LSP-сервер для Typst: автодополнение, ошибки, превью в редакторе
+            # Подхватывается VSCode (Tinymist extension), Neovim, Helix и др.
+            tinymist
+            # Форматтер для .typ файлов — аналог rustfmt для Typst
+            typstyle
+            # Fontconfig нужен, чтобы Typst корректно находил
+            # системные шрифты на Linux и в nix-окружении
+            fontconfig
+          ];
+        };
+
+        # packages — всё, что можно собрать через nix build .#<имя>
+        # Результат появляется в ./result (симлинк, игнорируется .gitignore)
+        #
+        # Добавление новой статьи:
+        #   slides-my-new-talk = typstBuild {
+        #     name = "slides-my-new-talk";
+        #     src = "slides/my-new-talk/slides.typ";
+        #   };
+        packages = {
+          slides-nix-for-rust-developers = typstBuild {
+            name = "slides-nix-for-rust-developers";
+            src = "slides/nix-for-rust-developers/slides.typ";
+          };
+        };
+      }
+    );
+}
