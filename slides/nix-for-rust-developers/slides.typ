@@ -159,6 +159,22 @@
   ],
 )
 
+#code-slide(
+  title: [`direnv` для ежедневной работы],
+  kicker: [Daily use],
+  note: [
+    Автоматический вход в ту же среду без ручного `nix develop`.
+  ],
+  body: [
+    #bash-code(
+      ```text
+      # .envrc
+      use flake
+      ```.text,
+    )
+  ],
+)
+
 #content-slide(
   kicker: [CI],
   title: [CI — исполнитель, а не источник правды],
@@ -383,21 +399,7 @@
   ),
 )
 
-#code-slide(
-  title: [`direnv` для ежедневной работы],
-  kicker: [Daily use],
-  note: [
-    Автоматический вход в ту же среду без ручного `nix develop`.
-  ],
-  body: [
-    #bash-code(
-      ```text
-      # .envrc
-      use flake
-      ```.text,
-    )
-  ],
-)
+
 
 #code-slide(
   title: [Nix как universal launcher],
