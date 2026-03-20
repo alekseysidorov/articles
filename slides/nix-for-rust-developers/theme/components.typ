@@ -45,7 +45,13 @@
 )
 
 #let compare-card(label, body) = soft-panel(width: 100%, [
-  #text(size: 13pt, weight: "bold", fill: text-muted, tracking: 0.06em, upper(label))
+  #text(
+    size: 13pt,
+    weight: "bold",
+    fill: text-muted,
+    tracking: 0.06em,
+    upper(label),
+  )
   #v(0.65em)
   #body
 ])
