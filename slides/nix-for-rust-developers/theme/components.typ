@@ -83,12 +83,14 @@
   )
 
   [
-    #place(top + right, dx: 0.5cm, dy: -0.3cm)[#logo-mark(size: 3.5cm)]
+    #place(top + right, dx: -0.1cm, dy: 0.05cm)[
+      #logo-mark(size: 4.4cm)
+    ]
 
-    #v(1fr)
-    #v(0.5fr)
+    #v(0.55fr)
+    #v(0.2fr)
 
-    #block(width: 78%)[
+    #block(width: 74%)[
       #section-kicker[Nix × Rust]
       #v(0.6em)
       #text(size: 48pt, weight: "bold", fill: text-main)[#title]
@@ -96,9 +98,9 @@
       #text(size: subtitle-size, fill: text-muted, weight: "regular")[#subtitle]
     ]
 
-    #v(1fr)
+    #v(0.7fr)
 
-    #block(width: 78%)[
+    #block(width: 74%)[
       #rule(length: 50%)
       #v(0.35em)
       #text(size: 18pt, fill: text-main)[#author]
@@ -206,9 +208,9 @@
 ) = slide[
   #block(width: width)[
     #section-kicker[#kicker]
-    #v(0.5em)
-    #section-title[#title]
     #v(0.3em)
+    #section-title[#title]
+    #v(0.2em)
     #two-cols(
       [
         #compare-card(left-title, [
