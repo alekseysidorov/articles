@@ -51,6 +51,11 @@
             src = ./.;
             buildInputs = with pkgs; [
               typst
+              # Fontconfig нужен, чтобы Typst видел шрифты в nix-сборке
+              fontconfig
+              # Шрифты из theme.typ
+              inter
+              jetbrains-mono
               # Route 159 — официальный шрифт NixOS, используется в slides.typ
               route159
             ];
@@ -83,6 +88,9 @@
             # Fontconfig нужен, чтобы Typst корректно находил
             # системные шрифты на Linux и в nix-окружении
             fontconfig
+            # Шрифты из theme.typ
+            inter
+            jetbrains-mono
             # Route 159 — официальный шрифт NixOS из branding guide
             route159
           ];
