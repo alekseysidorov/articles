@@ -102,76 +102,9 @@
 )
 
 #code-slide(
-  title: [`nix develop`],
-  kicker: [Workflow],
-  note: [
-    `nix develop` — это вход в описанную среду проекта.
-    Зашли в репозиторий, подняли её и дальше работаете как обычно.
-  ],
-  body: [
-    #bash-code(
-      ```text
-      git clone <repo>
-      cd <repo>
-      nix develop
-      cargo test
-      ```.text,
-    )
-  ],
-)
-
-#code-slide(
-  title: [Минимальный CI],
-  kicker: [Workflow],
-  note: [
-    CI перестаёт быть вторым местом,
-    где руками описана логика проекта.
-  ],
-  body: [
-    #yaml-code(
-      ```text
-      - uses: cachix/install-nix-action@v27
-      - run: nix flake check
-      ```.text,
-    )
-  ],
-)
-
-#hero-slide(
-  kicker: [Live demo],
-  title: [Дальше важнее не теория, а demo.],
-  note: [
-    Посмотрим на реальный проект.
-  ],
-  items: (
-    [как устроен `devShell`],
-    [как устроены `checks`],
-    [как проект экспортирует команды],
-  ),
-)
-
-#hero-slide(
-  kicker: [Final],
-  title: [Воспроизводимость становится частью проекта.],
-  note: [
-    Среда, команды и проверки уже описаны и реально исполняются.
-  ],
-)
-
-// ═══════════════════════════════════════════════════════════════════════════════
-// APPENDIX — дополнительные материалы для вопросов и углубления
-// ═══════════════════════════════════════════════════════════════════════════════
-
-#hero-slide(
-  kicker: [Appendix],
-  title: [Appendix],
-  note: [Запасные слайды для вопросов и спокойного разбора.],
-)
-
-#code-slide(
   title: [Структура flake],
-  kicker: [Appendix],
-  note: [Одно описание среды и всех точек входа.],
+  kicker: [Definition],
+  note: [Одно описание среды и точек входа проекта.],
   body: [
     #nix-code(
       ```text
@@ -202,17 +135,85 @@
     [одинаковая среда у всех],
   ),
   note: [
-    Вместо README с длинной инструкцией
+    Вместо длинного README
     появляется одна нормальная точка входа.
   ],
 )
 
 #code-slide(
-  title: [`nix run` как launcher команд],
+  title: [`nix develop`],
+  kicker: [Workflow],
+  note: [
+    `nix develop` поднимает dev-среду проекта.
+    После этого вы работаете обычными командами.
+  ],
+  body: [
+    #bash-code(
+      ```text
+      git clone <repo>
+      cd <repo>
+      nix develop
+      cargo test
+      ```.text,
+    )
+  ],
+)
+
+#content-slide(
+  kicker: [CI],
+  title: [CI — исполнитель, а не источник правды],
+  lead: [
+    CI не описывает проект.
+    Он его исполняет.
+  ],
+  items: (
+    [CI ставит Nix],
+    [CI запускает `nix flake check`],
+    [CI запускает скрипты из `nix develop`],
+    [логика остаётся в проекте, а не в YAML],
+  ),
+)
+
+#code-slide(
+  title: [checks — один набор локально и в CI],
+  kicker: [Checks],
+  note: [Не второй список проверок в YAML. Те же самые проверки.],
+  body: [
+    #nix-code(
+      ```text
+      checks = {
+        fmt     = ...
+        clippy  = ...
+        test    = ...
+      }
+      ```.text,
+    )
+  ],
+)
+
+#code-slide(
+  title: [Минимальный CI],
+  kicker: [Workflow],
+  note: [
+    CI перестаёт быть вторым местом,
+    где руками живёт логика проекта.
+  ],
+  body: [
+    #yaml-code(
+      ```text
+      - uses: cachix/install-nix-action@v27
+      - run: nix flake check
+      ```.text,
+    )
+  ],
+)
+
+#code-slide(
+  title: [`nix run` как launcher для команд],
   kicker: [Commands],
   note: [
     Проект экспортирует явные команды,
-    а не shell-скрипты по углам репозитория.
+    а не shell-скрипты.
   ],
   body: [
     #bash-code(
@@ -244,9 +245,36 @@
     [одно описание],
   ),
   note: [
-    Главная разница — количество мест,
-    где живёт правда о проекте.
+    Главная разница — сколько мест
+    хранит правду о проекте.
   ],
+)
+
+#hero-slide(
+  kicker: [Live demo],
+  title: [Дальше важнее не теория, а demo.],
+  note: [
+    Посмотрим на реальный проект.
+  ],
+)
+
+#hero-slide(
+  kicker: [Final],
+  title: [Если вокруг `cargo build` уже вырос отдельный мир, Nix быстро окупается.],
+  note: [
+    Особенно когда есть native deps,
+    несколько платформ и сложный CI.
+  ],
+)
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// APPENDIX — дополнительные материалы для вопросов и углубления
+// ═══════════════════════════════════════════════════════════════════════════════
+
+#hero-slide(
+  kicker: [Appendix],
+  title: [Appendix],
+  note: [Дополнительные материалы.],
 )
 
 #comparison-slide(
@@ -268,38 +296,7 @@
   ),
   note: [
     Чем больше native deps и платформ,
-    тем быстрее Nix начинает окупаться.
-  ],
-)
-
-#content-slide(
-  kicker: [CI],
-  title: [CI — исполнитель, а не источник правды],
-  lead: [
-    CI не описывает проект.
-    Он его исполняет.
-  ],
-  items: (
-    [CI ставит Nix],
-    [CI запускает `nix flake check`],
-    [логика проверок остаётся в проекте, а не в YAML],
-  ),
-)
-
-#code-slide(
-  title: [checks — один набор для всех],
-  kicker: [Checks],
-  note: [Не второй список проверок в YAML. Те же самые.],
-  body: [
-    #nix-code(
-      ```text
-      checks = {
-        fmt     = ...
-        clippy  = ...
-        test    = ...
-      }
-      ```.text,
-    )
+    тем быстрее окупается Nix.
   ],
 )
 
