@@ -1,65 +1,34 @@
 #import "theme.typ": *
 
-// ─── Raw code helpers (safe from Typst parsing) ─────────────────────────────
+// ─── Raw code helpers ───────────────────────────────────────────────────────
 #let raw-code(text, lang: none) = raw(text, block: true, lang: lang)
-#let text-code(text) = raw-code(text, lang: "text")
 #let bash-code(text) = raw-code(text, lang: "bash")
 #let yaml-code(text) = raw-code(text, lang: "yaml")
 #let nix-code(text) = raw-code(text, lang: "nix")
 
-// ─── Typography primitives ──────────────────────────────────────────────────
-#let body-copy(body) = text(size: body-small-size, fill: text-main, body)
-#let muted-copy(body) = text(size: body-small-size, fill: text-muted, body)
-#let note-copy(body) = text(size: 14pt, fill: text-muted, body)
-
+// ─── Typography aliases (avoid shadowing by slide parameters) ───────────────
 #let section-kicker(body) = kicker(body)
 #let section-title(body) = title(body)
 #let hero-title(body) = hero(body)
 
-#let inline-code(
-  body,
-  fill: text-main,
-  size: body-small-size,
-  weight: "regular",
-) = text(
-  font: font-mono,
-  size: size,
-  fill: fill,
-  weight: weight,
-  body,
-)
-
-#let command(body, accent-line: false) = inline-code(
-  body,
-  fill: if accent-line { accent } else { text-main },
-  size: code-size,
-)
+#let body-copy(body) = text(size: body-small-size, fill: text-main, body)
+#let muted-copy(body) = text(size: body-small-size, fill: text-muted, body)
 
 // ─── Panel primitives ───────────────────────────────────────────────────────
-#let soft-panel(
-  body,
-  width: 100%,
-  inset: panel-inset,
-  radius: panel-radius,
-) = block(
+#let soft-panel(body, width: 100%) = block(
   width: width,
   fill: surface,
   stroke: border + 0.7pt,
-  radius: radius,
-  inset: inset,
+  radius: panel-radius,
+  inset: panel-inset,
   body,
 )
 
-#let accent-panel(
-  body,
-  width: 100%,
-  inset: panel-inset,
-  radius: panel-radius,
-) = block(
+#let accent-panel(body, width: 100%) = block(
   width: width,
   fill: accent-soft,
-  radius: radius,
-  inset: inset,
+  radius: panel-radius,
+  inset: panel-inset,
   body,
 )
 
@@ -68,7 +37,7 @@
   fill: surface,
   stroke: border + 0.7pt,
   radius: panel-radius,
-  inset: (x: 22pt, y: 18pt),
+  inset: (x: 24pt, y: 20pt),
   [
     #show raw: set text(font: font-mono, size: code-size, fill: text-main)
     #body
@@ -76,13 +45,7 @@
 )
 
 #let compare-card(label, body) = soft-panel(width: 100%, [
-  #text(
-    size: 10pt,
-    weight: "bold",
-    fill: text-muted,
-    tracking: 0.06em,
-    upper(label),
-  )
+  #text(size: 13pt, weight: "bold", fill: text-muted, tracking: 0.06em, upper(label))
   #v(0.65em)
   #body
 ])
@@ -93,14 +56,11 @@
   left, right,
 )
 
-// ─── Page-level helpers ─────────────────────────────────────────────────────
-#let slide(body) = [
-  #pagebreak()
-  #body
-]
+// ─── Page helper ────────────────────────────────────────────────────────────
+#let slide(body) = [#pagebreak() #body]
 
 // ═════════════════════════════════════════════════════════════════════════════
-// TITLE SLIDE — no sidebar, full-bleed, golden-ratio vertical position
+// TITLE SLIDE — no sidebar, full-bleed
 // ═════════════════════════════════════════════════════════════════════════════
 #let title-slide(
   title: [],
@@ -117,12 +77,8 @@
   )
 
   [
-    // Large logo in the top-right corner
-    #place(top + right, dx: 0.5cm, dy: -0.3cm)[
-      #logo-mark(size: 3.5cm)
-    ]
+    #place(top + right, dx: 0.5cm, dy: -0.3cm)[#logo-mark(size: 3.5cm)]
 
-    // Golden-ratio positioning: title block
     #v(1fr)
     #v(0.5fr)
 
@@ -131,37 +87,40 @@
       #v(0.6em)
       #text(size: 48pt, weight: "bold", fill: text-main)[#title]
       #v(0.35em)
-      #text(size: 22pt, fill: text-muted, weight: "regular")[#subtitle]
+      #text(size: subtitle-size, fill: text-muted, weight: "regular")[#subtitle]
     ]
 
     #v(1fr)
 
-    // Author line anchored to the bottom — cannot overflow
     #block(width: 78%)[
       #rule(length: 50%)
       #v(0.35em)
-      #text(size: 15pt, fill: text-main)[#author]
+      #text(size: 18pt, fill: text-main)[#author]
       #h(1.0em)
-      #text(size: 13pt, fill: text-muted)[#year]
+      #text(size: 16pt, fill: text-muted)[#year]
     ]
   ]
 }
 
 // ═════════════════════════════════════════════════════════════════════════════
-// BIG IDEA — one strong statement, centred both axes
+// HERO SLIDE — big centred statement + optional note & items
+// (replaces: big-idea, demo-slide, appendix-divider, final-slide)
 // ═════════════════════════════════════════════════════════════════════════════
-#let big-idea(
+#let hero-slide(
   title: [],
-  kicker-text: [Big idea],
+  kicker: none,
   note: none,
+  items: (),
   width: 80%,
 ) = slide[
   #v(1fr)
   #align(center)[
     #block(width: width)[
       #set align(center)
-      #section-kicker[#kicker-text]
-      #v(0.6em)
+      #if kicker != none [
+        #section-kicker[#kicker]
+        #v(0.6em)
+      ]
       #hero-title[#title]
       #if note != none [
         #v(0.85em)
@@ -169,23 +128,32 @@
       ]
     ]
   ]
+  #if items.len() > 0 [
+    #v(0.8em)
+    #block(width: width)[
+      #for item in items {
+        list.item(item)
+      }
+    ]
+  ]
   #v(1fr)
 ]
 
 // ═════════════════════════════════════════════════════════════════════════════
-// EXPLAIN SLIDE — kicker + title + lead + bullet points + optional aside
+// CONTENT SLIDE — title + optional lead + bullet items + optional aside
+// (replaces: explain-slide, symptom-slide)
 // ═════════════════════════════════════════════════════════════════════════════
-#let explain-slide(
+#let content-slide(
   title: [],
-  kicker-text: none,
+  kicker: none,
   lead: none,
-  points: (),
+  items: (),
   aside: none,
-  width: 82%,
+  width: 92%,
 ) = slide[
   #block(width: width)[
-    #if kicker-text != none [
-      #section-kicker[#kicker-text]
+    #if kicker != none [
+      #section-kicker[#kicker]
       #v(0.5em)
     ]
     #section-title[#title]
@@ -193,10 +161,10 @@
       #v(0.6em)
       #muted-copy[#lead]
     ]
-    #if points.len() > 0 [
+    #if items.len() > 0 [
       #v(0.9em)
-      #for point in points {
-        list.item(point)
+      #for item in items {
+        list.item(item)
       }
     ]
   ]
@@ -206,69 +174,19 @@
       right + bottom,
       dx: -0.2cm,
       dy: -0.15cm,
-      accent-panel(width: 6.0cm)[#aside],
+      accent-panel(width: 7cm)[#aside],
     )
   ]
 ]
 
 // ═════════════════════════════════════════════════════════════════════════════
-// CODE SLIDE — kicker + title + note + code block (hero element)
-// ═════════════════════════════════════════════════════════════════════════════
-#let code-slide(
-  title: [],
-  kicker-text: [Code],
-  body: [],
-  note: none,
-  width: 78%,
-) = slide[
-  #block(width: width)[
-    #section-kicker[#kicker-text]
-    #v(0.5em)
-    #section-title[#title]
-    #if note != none [
-      #v(0.5em)
-      #muted-copy[#note]
-    ]
-    #v(0.85em)
-    #code-block[#body]
-  ]
-]
-
-// ═════════════════════════════════════════════════════════════════════════════
-// COMPARISON SLIDE — two balanced columns with cards
+// COMPARISON SLIDE — two-column cards with item lists
+// (replaces: compact-comparison-slide, comparison-slide)
+// Note is pinned to the bottom via `place` so it can never overflow.
 // ═════════════════════════════════════════════════════════════════════════════
 #let comparison-slide(
   title: [],
-  kicker-text: [Comparison],
-  left-title: [],
-  left-body: [],
-  right-title: [],
-  right-body: [],
-  note: none,
-  width: 92%,
-) = slide[
-  #block(width: width)[
-    #section-kicker[#kicker-text]
-    #v(0.5em)
-    #section-title[#title]
-    #v(0.85em)
-    #two-cols(
-      [ #compare-card(left-title, left-body) ],
-      [ #compare-card(right-title, right-body) ],
-    )
-    #if note != none [
-      #v(0.7em)
-      #muted-copy[#note]
-    ]
-  ]
-]
-
-// ═════════════════════════════════════════════════════════════════════════════
-// COMPACT COMPARISON — items as bullet lists inside cards
-// ═════════════════════════════════════════════════════════════════════════════
-#let compact-comparison-slide(
-  title: [],
-  kicker-text: [Comparison],
+  kicker: [Comparison],
   left-title: [],
   left-items: (),
   right-title: [],
@@ -277,10 +195,10 @@
   width: 92%,
 ) = slide[
   #block(width: width)[
-    #section-kicker[#kicker-text]
+    #section-kicker[#kicker]
     #v(0.5em)
     #section-title[#title]
-    #v(0.85em)
+    #v(0.7em)
     #two-cols(
       [
         #compare-card(left-title, [
@@ -297,102 +215,36 @@
         ])
       ],
     )
-    #if note != none [
-      #v(0.7em)
-      #muted-copy[#note]
+  ]
+
+  #if note != none [
+    #place(bottom + left)[
+      #block(width: width)[
+        #muted-copy[#note]
+      ]
     ]
   ]
 ]
 
 // ═════════════════════════════════════════════════════════════════════════════
-// SYMPTOM SLIDE — title + bulleted symptom lines
+// CODE SLIDE — title + note + code block
 // ═════════════════════════════════════════════════════════════════════════════
-#let symptom-slide(
+#let code-slide(
   title: [],
-  lines: (),
-  kicker-text: [Symptoms],
-  width: 78%,
+  kicker: [Code],
+  body: [],
+  note: none,
+  width: 92%,
 ) = slide[
   #block(width: width)[
-    #section-kicker[#kicker-text]
+    #section-kicker[#kicker]
     #v(0.5em)
     #section-title[#title]
-    #if lines.len() > 0 [
-      #v(1.0em)
-      #set list(spacing: 0.7em)
-      #for line in lines {
-        list.item(text(size: 22pt, weight: "medium", fill: text-main, line))
-      }
-    ]
-  ]
-]
-
-// ═════════════════════════════════════════════════════════════════════════════
-// DEMO SLIDE — transition to live demo, prominent + nearly empty
-// ═════════════════════════════════════════════════════════════════════════════
-#let demo-slide(
-  title: [],
-  note: none,
-  steps: (),
-  width: 78%,
-) = slide[
-  #v(1fr)
-  #v(0.45fr)
-  #block(width: width)[
-    #section-kicker[Live demo]
-    #v(0.6em)
-    #hero-title[#title]
     #if note != none [
-      #v(0.75em)
+      #v(0.5em)
       #muted-copy[#note]
     ]
-    #if steps.len() > 0 [
-      #v(1.0em)
-      #for step in steps {
-        list.item(step)
-      }
-    ]
+    #v(0.85em)
+    #code-block[#body]
   ]
-  #v(1fr)
-]
-
-// ═════════════════════════════════════════════════════════════════════════════
-// APPENDIX DIVIDER — section break before appendix slides
-// ═════════════════════════════════════════════════════════════════════════════
-#let appendix-divider(
-  title: [Appendix],
-  note: [Запасные слайды для вопросов и спокойного разбора.],
-) = slide[
-  #v(1fr)
-  #v(0.5fr)
-  #block(width: 72%)[
-    #section-kicker[Appendix]
-    #v(0.6em)
-    #hero-title[#title]
-    #v(0.75em)
-    #muted-copy[#note]
-  ]
-  #v(1fr)
-]
-
-// ═════════════════════════════════════════════════════════════════════════════
-// FINAL SLIDE — closing statement
-// ═════════════════════════════════════════════════════════════════════════════
-#let final-slide(
-  title: [],
-  note: none,
-  width: 76%,
-) = slide[
-  #v(1fr)
-  #v(0.5fr)
-  #block(width: width)[
-    #section-kicker[Final]
-    #v(0.6em)
-    #hero-title[#title]
-    #if note != none [
-      #v(0.75em)
-      #muted-copy[#note]
-    ]
-  ]
-  #v(1fr)
 ]

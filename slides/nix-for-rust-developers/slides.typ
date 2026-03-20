@@ -14,8 +14,8 @@
   year: [2026],
 )
 
-#big-idea(
-  kicker-text: [Thesis],
+#hero-slide(
+  kicker: [Thesis],
   title: [У проекта должен быть один источник правды.],
   note: [
     Проблема обычно уже не в коде.
@@ -23,30 +23,31 @@
   ],
 )
 
-#explain-slide(
-  kicker-text: [Problem],
+#content-slide(
+  kicker: [Problem],
   title: [Проект живёт сразу в нескольких описаниях],
   lead: [
     `Cargo.toml` — это только часть картины.
     Всё остальное быстро расходится.
   ],
-  points: (
+  items: (
     [`Cargo.toml` знает только про crates],
     [toolchain, system deps и scripts живут отдельно],
     [CI часто проверяет не совсем то, что можно запустить локально],
   ),
 )
 
-#symptom-slide(
+#content-slide(
+  kicker: [Symptoms],
   title: [Типичные симптомы],
-  lines: (
+  items: (
     [onboarding дорогой],
     [README устаревает],
     [локально работает — в CI падает],
   ),
 )
 
-#compact-comparison-slide(
+#comparison-slide(
   title: [Cargo vs Nix],
   left-title: [Cargo],
   left-items: (
@@ -68,9 +69,9 @@
   ],
 )
 
-#compact-comparison-slide(
+#comparison-slide(
   title: [Что такое flake],
-  kicker-text: [Definition],
+  kicker: [Definition],
   left-title: [Файлы],
   left-items: (
     [`flake.nix` — описание проекта],
@@ -90,7 +91,7 @@
 
 #code-slide(
   title: [`nix develop`],
-  kicker-text: [Workflow],
+  kicker: [Workflow],
   note: [
     clone → `nix develop` → работаешь
   ],
@@ -108,7 +109,7 @@
 
 #code-slide(
   title: [Минимальный CI],
-  kicker-text: [Workflow],
+  kicker: [Workflow],
   note: [
     CI перестаёт быть вторым местом,
     где руками описана логика проекта.
@@ -123,19 +124,21 @@
   ],
 )
 
-#demo-slide(
+#hero-slide(
+  kicker: [Live demo],
   title: [Дальше важнее не теория, а demo.],
   note: [
     Посмотрим на реальный проект.
   ],
-  steps: (
+  items: (
     [как устроен `devShell`],
     [как устроены `checks`],
     [как проект экспортирует команды],
   ),
 )
 
-#final-slide(
+#hero-slide(
+  kicker: [Final],
   title: [Воспроизводимость становится частью проекта.],
   note: [
     Среда, команды и проверки уже описаны и реально исполняются.
@@ -146,20 +149,19 @@
 // APPENDIX — дополнительные материалы для вопросов и углубления
 // ═══════════════════════════════════════════════════════════════════════════════
 
-#appendix-divider()
+#hero-slide(
+  kicker: [Appendix],
+  title: [Appendix],
+  note: [Запасные слайды для вопросов и спокойного разбора.],
+)
 
 #code-slide(
-  title: [Структура flake на практике],
-  kicker-text: [Appendix],
-  note: [
-    Одно описание среды и всех точек входа.
-  ],
+  title: [Структура flake],
+  kicker: [Appendix],
+  note: [Одно описание среды и всех точек входа.],
   body: [
     #nix-code(
       ```text
-      flake.nix
-      flake.lock
-
       outputs = {
         devShells = ...
         checks    = ...
@@ -171,9 +173,9 @@
   ],
 )
 
-#compact-comparison-slide(
-  title: [`nix develop` — нормальная точка входа],
-  kicker-text: [devShell],
+#comparison-slide(
+  title: [`nix develop` — точка входа],
+  kicker: [devShell],
   left-title: [Что внутри],
   left-items: (
     [Rust toolchain],
@@ -194,7 +196,7 @@
 
 #code-slide(
   title: [`nix run` как launcher команд],
-  kicker-text: [Commands],
+  kicker: [Commands],
   note: [
     Проект экспортирует явные команды,
     а не shell-скрипты по углам репозитория.
@@ -210,7 +212,7 @@
   ],
 )
 
-#compact-comparison-slide(
+#comparison-slide(
   title: [Without Nix / With Nix],
   left-title: [Without Nix],
   left-items: (
@@ -234,9 +236,9 @@
   ],
 )
 
-#compact-comparison-slide(
+#comparison-slide(
   title: [Где Nix окупается быстрее всего],
-  kicker-text: [Trade-offs],
+  kicker: [Trade-offs],
   left-title: [Простые проекты],
   left-items: (
     [мало зависимостей],
@@ -257,14 +259,14 @@
   ],
 )
 
-#explain-slide(
-  kicker-text: [CI],
+#content-slide(
+  kicker: [CI],
   title: [CI — исполнитель, а не источник правды],
   lead: [
     CI не описывает проект.
     Он его исполняет.
   ],
-  points: (
+  items: (
     [CI ставит Nix],
     [CI запускает `nix flake check`],
     [логика проверок остаётся в проекте, а не в YAML],
@@ -272,28 +274,25 @@
 )
 
 #code-slide(
-  title: [checks = один и тот же набор локально и в CI],
-  kicker-text: [Checks],
-  note: [
-    Не второй список проверок в YAML.
-    Те же самые проверки.
-  ],
+  title: [checks — один набор для всех],
+  kicker: [Checks],
+  note: [Не второй список проверок в YAML. Те же самые.],
   body: [
     #nix-code(
       ```text
       checks = {
-        fmt = ...
-        clippy = ...
-        test = ...
+        fmt     = ...
+        clippy  = ...
+        test    = ...
       }
       ```.text,
     )
   ],
 )
 
-#compact-comparison-slide(
+#comparison-slide(
   title: [Nix ≠ NixOS],
-  kicker-text: [FAQ],
+  kicker: [FAQ],
   left-title: [Nix],
   left-items: (
     [инструмент],
@@ -312,9 +311,9 @@
   ],
 )
 
-#compact-comparison-slide(
+#comparison-slide(
   title: [Nix vs Docker],
-  kicker-text: [FAQ],
+  kicker: [FAQ],
   left-title: [Docker],
   left-items: (
     [где это запускать],
@@ -333,9 +332,9 @@
   ],
 )
 
-#compact-comparison-slide(
+#comparison-slide(
   title: [`flake.lock` важен не меньше, чем `Cargo.lock`],
-  kicker-text: [Lockfile],
+  kicker: [Lockfile],
   left-title: [Cargo.lock],
   left-items: (
     [фиксирует crates],
@@ -349,21 +348,21 @@
   note: [Это lockfile уровнем выше.],
 )
 
-#explain-slide(
-  kicker-text: [Architecture],
+#content-slide(
+  kicker: [Architecture],
   title: [Почему это воспроизводимо],
   lead: [
     Воспроизводимость здесь не на словах.
     Она следует из модели сборки.
   ],
-  points: (
+  items: (
     [зависимости описаны явно],
     [артефакты живут в `/nix/store/...`],
     [сборка идёт в sandbox, без доступа к сети],
     [checks строятся на копии репозитория],
   ),
   aside: [
-    #text(size: 10pt, weight: "bold", fill: accent, tracking: 0.06em, upper(
+    #text(size: 12pt, weight: "bold", fill: accent, tracking: 0.06em, upper(
       [Build model],
     ))
     #v(0.4em)
@@ -375,7 +374,7 @@
 
 #code-slide(
   title: [`direnv` для ежедневной работы],
-  kicker-text: [Daily use],
+  kicker: [Daily use],
   note: [
     `cd` в проект → среда поднялась автоматически.
   ],
@@ -391,7 +390,7 @@
 
 #code-slide(
   title: [Nix как universal launcher],
-  kicker-text: [Tooling],
+  kicker: [Tooling],
   note: [
     Локально, в CI и в автоматизации —
     без глобальной установки.
@@ -407,7 +406,8 @@
   ],
 )
 
-#final-slide(
+#hero-slide(
+  kicker: [Final],
   title: [Если вокруг `cargo build` уже вырос отдельный мир, Nix быстро окупается.],
   note: [
     Особенно когда есть native deps,

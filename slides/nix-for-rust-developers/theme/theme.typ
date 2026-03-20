@@ -2,7 +2,7 @@
 #let bg = rgb("#FAFBFF")
 #let surface = rgb("#FFFFFF")
 #let text-main = rgb("#111827")
-#let text-muted = rgb("#6B7280")
+#let text-muted = rgb("#4B5563")
 #let accent = rgb("#5277C3")
 #let accent-soft = rgb("#E6EEFF")
 #let accent-purple = rgb("#7C3AED")
@@ -14,15 +14,16 @@
 #let font-mono = "JetBrains Mono"
 
 // ─── Sidebar geometry ────────────────────────────────────────────────────────
-// Wider sidebar to hold the Nix logo comfortably.
-#let sidebar-w = 2.0cm
+// 3.2cm ≈ 12.6% of slide width — enough to feel like a branded panel,
+// not so wide that it steals content space.
+#let sidebar-w = 3.2cm
 
 // ─── Page margins (content slides) ──────────────────────────────────────────
 #let page-margins = (
-  left: sidebar-w + 0.95cm,
-  right: 2.0cm,
-  top: 1.6cm,
-  bottom: 1.35cm,
+  left: sidebar-w + 0.65cm,
+  right: 1.8cm,
+  top: 1.5cm,
+  bottom: 1.2cm,
 )
 
 // Title slide has no sidebar, so symmetrical wide margins.
@@ -33,57 +34,63 @@
   bottom: 1.5cm,
 )
 
-// ─── Content widths (% of text area after margins) ──────────────────────────
-#let content-width = 100%
-#let narrow-width = 72%
-#let wide-width = 92%
-
-// ─── Typography scale ────────────────────────────────────────────────────────
-#let hero-size = 42pt
-#let title-size = 30pt
-#let subtitle-size = 19pt
-#let body-size = 19pt
-#let body-small-size = 16pt
-#let code-size = 15pt
-#let kicker-size = 10pt
-#let sidebar-label-size = 9pt
+// ─── Typography scale (tuned for projector at distance) ─────────────────────
+#let hero-size = 46pt
+#let title-size = 34pt
+#let subtitle-size = 22pt
+#let body-size = 22pt
+#let body-small-size = 18pt
+#let code-size = 18pt
+#let kicker-size = 14pt
 
 // ─── Panels ──────────────────────────────────────────────────────────────────
 #let panel-radius = 10pt
 #let panel-inset = 20pt
 
 // ─── Sidebar background (placed as page background on content slides) ───────
-// Contains the colored strip, accent border, and the Nix logo at the bottom.
+// Contains: coloured strip, accent border, Nix logo (centred), page number
+// (bottom).  The page number lives here so the footer stays empty and content
+// can use the full vertical extent of the page.
 #let sidebar-bg = context {
-  // Sidebar strip
+  // Coloured strip
   place(
     top + left,
     rect(width: sidebar-w, height: 100%, fill: sidebar-fill),
   )
-  // Thin accent line at the right edge of the sidebar
+  // Thin accent line at the right edge
   place(
     top + left,
     dx: sidebar-w,
     line(start: (0pt, 0pt), end: (0pt, 100%), stroke: border + 0.7pt),
   )
-  // Nix logo centered horizontally in the sidebar, near the bottom
+  // Nix logo — vertically centred in the sidebar
   place(
-    bottom + left,
-    dx: (sidebar-w - 1.4cm) / 2,
-    dy: -0.7cm,
+    horizon + left,
+    dx: (sidebar-w - 2.0cm) / 2,
     image(
       "../assets/nixos-logomark-rainbow-gradient-recommended.svg",
-      width: 1.4cm,
-      height: 1.4cm,
+      width: 2.0cm,
+      height: 2.0cm,
       fit: "contain",
     ),
   )
+  // Page number — bottom of sidebar, centred horizontally
+  place(
+    bottom + left,
+    dy: -0.55cm,
+    block(width: sidebar-w)[
+      #set align(center)
+      #text(size: 13pt, fill: text-muted, weight: "regular")[
+        #counter(page).display()
+      ]
+    ],
+  )
 }
 
-// ─── Page number helper (used in footer) ────────────────────────────────────
+// ─── Page number helper (used only by the title slide footer) ───────────────
 #let page-number = context align(
   right,
-  text(size: 10pt, fill: text-muted, weight: "regular")[
+  text(size: 13pt, fill: text-muted, weight: "regular")[
     #counter(page).display()
   ],
 )
@@ -95,7 +102,7 @@
     margin: page-margins,
     fill: bg,
     background: sidebar-bg,
-    footer: page-number,
+    // No footer — the page number is rendered inside the sidebar background.
   )
 
   set text(
@@ -111,7 +118,7 @@
   )
 
   set list(
-    marker: text(fill: accent, size: 14pt)[▸],
+    marker: text(fill: accent, size: 18pt)[▸],
     indent: 0.9em,
     body-indent: 0.55em,
     spacing: 0.55em,
@@ -149,57 +156,7 @@
   body,
 )
 
-#let body-text(body) = text(
-  size: body-small-size,
-  fill: text-main,
-  body,
-)
-
-#let muted(body) = text(
-  size: body-small-size,
-  fill: text-muted,
-  body,
-)
-
-#let mono(body, fill: text-main, weight: "regular") = text(
-  font: font-mono,
-  size: code-size,
-  fill: fill,
-  weight: weight,
-  body,
-)
-
-#let accent-text(body) = text(fill: accent, body)
-
 #let rule(length: 100%) = line(length: length, stroke: border + 0.7pt)
-
-// ─── Surface blocks ─────────────────────────────────────────────────────────
-#let soft-surface(
-  body,
-  width: 100%,
-  inset: panel-inset,
-  radius: panel-radius,
-) = block(
-  width: width,
-  fill: surface,
-  stroke: border + 0.7pt,
-  inset: inset,
-  radius: radius,
-  body,
-)
-
-#let tint-surface(
-  body,
-  width: 100%,
-  inset: panel-inset,
-  radius: panel-radius,
-) = block(
-  width: width,
-  fill: accent-soft,
-  inset: inset,
-  radius: radius,
-  body,
-)
 
 // ─── Logo helper ─────────────────────────────────────────────────────────────
 #let logo-mark(
