@@ -80,9 +80,9 @@
   body: [
     #bash-code(
       ```text
-$ git clone <repo>
-$ nix develop
-$ cargo test
+      $ git clone <repo>
+      $ nix develop
+      $ cargo test
       ```.text,
     )
   ],
@@ -98,8 +98,8 @@ $ cargo test
   body: [
     #yaml-code(
       ```text
-- uses: cachix/install-nix-action@v27
-- run: nix flake check
+      - uses: cachix/install-nix-action@v27
+      - run: nix flake check
       ```.text,
     )
   ],
@@ -142,15 +142,15 @@ $ cargo test
   body: [
     #nix-code(
       ```text
-flake.nix
-flake.lock
+      flake.nix
+      flake.lock
 
-outputs = {
-  devShells = ...
-  checks    = ...
-  packages  = ...
-  apps      = ...
-}
+      outputs = {
+        devShells = ...
+        checks    = ...
+        packages  = ...
+        apps      = ...
+      }
       ```.text,
     )
   ],
@@ -252,11 +252,11 @@ outputs = {
   body: [
     #nix-code(
       ```text
-checks = {
-  fmt = ...
-  clippy = ...
-  test = ...
-}
+      checks = {
+        fmt = ...
+        clippy = ...
+        test = ...
+      }
       ```.text,
     )
   ],
@@ -309,8 +309,8 @@ checks = {
   body: [
     #text-code(
       ```text
-Cargo.lock  -> фиксирует crates
-flake.lock  -> фиксирует dev/build environment
+      Cargo.lock  -> фиксирует crates
+      flake.lock  -> фиксирует dev/build environment
       ```.text,
     )
   ],
@@ -339,9 +339,9 @@ flake.lock  -> фиксирует dev/build environment
   body: [
     #bash-code(
       ```text
-.envrc
+      .envrc
 
-use flake
+      use flake
       ```.text,
     )
   ],
@@ -356,9 +356,9 @@ use flake
   body: [
     #bash-code(
       ```text
-nix run nixpkgs#jq
-nix run nixpkgs#ripgrep
-nix run nixpkgs#nodejs
+      nix run nixpkgs#jq
+      nix run nixpkgs#ripgrep
+      nix run nixpkgs#nodejs
       ```.text,
     )
   ],

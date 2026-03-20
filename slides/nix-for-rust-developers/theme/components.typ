@@ -99,8 +99,7 @@
 #let two-cols(left, right, gutter: 1.4cm) = grid(
   columns: (1fr, 1fr),
   gutter: gutter,
-  left,
-  right,
+  left, right,
 )
 
 #let logo-mark(size: 1.8cm) = image(

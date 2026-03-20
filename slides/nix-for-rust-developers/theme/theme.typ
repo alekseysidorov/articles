@@ -169,7 +169,12 @@
   stroke: border + 0.8pt,
 )
 
-#let soft-surface(body, width: 100%, inset: panel-inset, radius: panel-radius) = block(
+#let soft-surface(
+  body,
+  width: 100%,
+  inset: panel-inset,
+  radius: panel-radius,
+) = block(
   width: width,
   fill: surface,
   stroke: border + 0.8pt,
@@ -178,7 +183,12 @@
   body,
 )
 
-#let tint-surface(body, width: 100%, inset: panel-inset, radius: panel-radius) = block(
+#let tint-surface(
+  body,
+  width: 100%,
+  inset: panel-inset,
+  radius: panel-radius,
+) = block(
   width: width,
   fill: accent-soft,
   inset: inset,

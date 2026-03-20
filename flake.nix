@@ -5,12 +5,16 @@
     # flake-utils — хелпер, чтобы не писать руками атрибуты для каждой системы
     # (x86_64-linux, aarch64-linux, aarch64-darwin, x86_64-darwin)
     flake-utils.url = "github:numtide/flake-utils";
+    # treefmt-nix — декларативная настройка formatter wrapper для всего репозитория
+    treefmt-nix.url = "github:numtide/treefmt-nix";
   };
 
   outputs =
-    {
+    inputs@{
+      self,
       nixpkgs,
       flake-utils,
+      treefmt-nix,
       ...
     }:
     # Оборачиваем всё в eachDefaultSystem — flake автоматически
@@ -20,6 +24,18 @@
       let
         # Пакеты nixpkgs для текущей системы
         pkgs = nixpkgs.legacyPackages.${system};
+
+        # Конфигурация treefmt для репозитория.
+        # projectRootFile нужен, чтобы formatter корректно находил корень проекта.
+        treefmt = treefmt-nix.lib.evalModule pkgs {
+          projectRootFile = "flake.nix";
+          programs = {
+            # Форматирование .nix файлов
+            nixfmt.enable = true;
+            # Форматирование .typ файлов
+            typstyle.enable = true;
+          };
+        };
 
         # Вспомогательная функция для сборки слайдов из .typ файла.
         # Принимает attrset с полями name и src, возвращает derivation,
@@ -35,7 +51,7 @@
             src = ./.;
             buildInputs = with pkgs; [
               typst
-              # route159 — официальный шрифт NixOS, используется в slides.typ
+              # Route 159 — официальный шрифт NixOS, используется в slides.typ
               route159
             ];
             buildPhase = ''
@@ -47,6 +63,9 @@
           };
       in
       {
+        # formatter — стандартная точка входа для nix fmt
+        formatter = treefmt.config.build.wrapper;
+
         # devShells.default — среда, которая активируется через:
         #   nix develop
         #   direnv (автоматически, при наличии .envrc с "use flake")
@@ -67,6 +86,12 @@
             # Route 159 — официальный шрифт NixOS из branding guide
             route159
           ];
+        };
+
+        # checks — то, что удобно прогонять в CI.
+        # formatter.check self проверяет, что дерево уже отформатировано.
+        checks = {
+          formatting = treefmt.config.build.check self;
         };
 
         # packages — всё, что можно собрать через nix build .#<имя>
