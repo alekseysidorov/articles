@@ -68,6 +68,19 @@
   ],
 )
 
+#content-slide(
+  kicker: [Definition],
+  title: [Что такое Nix],
+  lead: [
+    Nix — это способ явно описать среду проекта.
+  ],
+  items: (
+    [не только crates, но и toolchain, system deps и tools],
+    [команды и проверки тоже становятся частью проекта],
+    [одна среда локально, в CI и на новой машине],
+  ),
+)
+
 #comparison-slide(
   title: [Что такое flake],
   kicker: [Definition],
