@@ -383,7 +383,7 @@
   title: [`direnv` для ежедневной работы],
   kicker: [Daily use],
   note: [
-    `cd` в проект → среда поднялась автоматически.
+    Автоматический вход в ту же среду без ручного `nix develop`.
   ],
   body: [
     #bash-code(
@@ -415,9 +415,9 @@
 
 #hero-slide(
   kicker: [Final],
-  title: [Если вокруг `cargo build` уже вырос отдельный мир, Nix быстро окупается.],
+  title: [Спасибо за внимание],
   note: [
-    Особенно когда есть native deps,
-    несколько платформ и сложный CI.
+    Telegram — \@sauron1987
+    GitHub — github.com/alekseysidorov
   ],
 )

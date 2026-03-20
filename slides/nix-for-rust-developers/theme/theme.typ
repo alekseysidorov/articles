@@ -64,11 +64,11 @@
     dx: sidebar-w,
     line(start: (0pt, 0pt), end: (0pt, 100%), stroke: border + 0.7pt),
   )
-  // Nix logo — крупно и строго по центру сайдбара
+  // Nix logo — выровнен по верхнему ритму заголовков, а не по центру слайда
   place(
-    horizon + left,
+    top + left,
     dx: (sidebar-w - logo-size) / 2,
-    dy: -logo-size / 2,
+    dy: 1.55cm,
     image(
       "../assets/nixos-logomark-rainbow-gradient-recommended.svg",
       width: logo-size,
