@@ -93,37 +93,11 @@
   left, right,
 )
 
-// ─── Sidebar section label ──────────────────────────────────────────────────
-// Placed inside the sidebar strip area using `place`.
-// The label sits near the top of the sidebar, aligned to top-left,
-// with a small inset so it doesn't touch the edge.
-#let sidebar-section(label) = place(
-  top + left,
-  dx: 0.35cm,
-  dy: 1.55cm,
-  block(width: sidebar-w - 0.4cm)[
-    #text(
-      font: font-sans,
-      size: sidebar-label-size,
-      weight: "bold",
-      fill: text-muted,
-      tracking: 0.1em,
-    )[#upper(label)]
-  ],
-)
-
 // ─── Page-level helpers ─────────────────────────────────────────────────────
 #let slide(body) = [
   #pagebreak()
   #body
 ]
-
-#let corner-logo(size: 2.2cm) = place(
-  top + right,
-  dx: -0.3cm,
-  dy: 0.35cm,
-  box(inset: 0pt)[#logo-mark(size: size)],
-)
 
 // ═════════════════════════════════════════════════════════════════════════════
 // TITLE SLIDE — no sidebar, full-bleed, golden-ratio vertical position
@@ -132,72 +106,74 @@
   title: [],
   subtitle: [],
   author: [],
-  year: [2025],
-  show-logo: true,
+  year: [2026],
 ) = {
-  // Override page settings: no sidebar background, wide symmetrical margins.
   set page(
     paper: "presentation-16-9",
     margin: title-page-margins,
     fill: bg,
     background: none,
+    footer: page-number,
   )
 
   [
-    #if show-logo [
-      #corner-logo(size: 2.5cm)
+    // Large logo in the top-right corner
+    #place(top + right, dx: 0.5cm, dy: -0.3cm)[
+      #logo-mark(size: 3.5cm)
     ]
 
-    // Golden ratio: content starts at ~38% from the top.
+    // Golden-ratio positioning: title block
     #v(1fr)
-    #v(0.62fr)
+    #v(0.5fr)
 
     #block(width: 78%)[
       #section-kicker[Nix × Rust]
-      #v(1.0em)
+      #v(0.6em)
       #text(size: 48pt, weight: "bold", fill: text-main)[#title]
-      #v(0.5em)
+      #v(0.35em)
       #text(size: 22pt, fill: text-muted, weight: "regular")[#subtitle]
-      #v(1.8em)
-      #rule(length: 50%)
-      #v(0.9em)
-      #text(size: 15pt, fill: text-main)[#author]
-      #h(1.5em)
-      #text(size: 13pt, fill: text-muted)[#year]
     ]
 
     #v(1fr)
+
+    // Author line anchored to the bottom — cannot overflow
+    #block(width: 78%)[
+      #rule(length: 50%)
+      #v(0.35em)
+      #text(size: 15pt, fill: text-main)[#author]
+      #h(1.0em)
+      #text(size: 13pt, fill: text-muted)[#year]
+    ]
   ]
 }
 
 // ═════════════════════════════════════════════════════════════════════════════
-// BIG IDEA — one strong statement, optional supporting line
+// BIG IDEA — one strong statement, centred both axes
 // ═════════════════════════════════════════════════════════════════════════════
 #let big-idea(
   title: [],
   kicker-text: [Big idea],
   note: none,
   width: 80%,
-  show-logo: false,
 ) = slide[
-  #sidebar-section(kicker-text)
-  #if show-logo [ #corner-logo() ]
-
-  // Vertically centered, slightly above middle (golden ratio).
   #v(1fr)
-  #v(0.5fr)
-  #block(width: width)[
-    #hero-title[#title]
-    #if note != none [
-      #v(0.85em)
-      #text(size: subtitle-size, fill: text-muted)[#note]
+  #align(center)[
+    #block(width: width)[
+      #set align(center)
+      #section-kicker[#kicker-text]
+      #v(0.6em)
+      #hero-title[#title]
+      #if note != none [
+        #v(0.85em)
+        #text(size: subtitle-size, fill: text-muted)[#note]
+      ]
     ]
   ]
   #v(1fr)
 ]
 
 // ═════════════════════════════════════════════════════════════════════════════
-// EXPLAIN SLIDE — title + lead + points + optional aside panel
+// EXPLAIN SLIDE — kicker + title + lead + bullet points + optional aside
 // ═════════════════════════════════════════════════════════════════════════════
 #let explain-slide(
   title: [],
@@ -206,12 +182,12 @@
   points: (),
   aside: none,
   width: 82%,
-  show-logo: false,
 ) = slide[
-  #if kicker-text != none [ #sidebar-section(kicker-text) ]
-  #if show-logo [ #corner-logo() ]
-
   #block(width: width)[
+    #if kicker-text != none [
+      #section-kicker[#kicker-text]
+      #v(0.5em)
+    ]
     #section-title[#title]
     #if lead != none [
       #v(0.6em)
@@ -236,7 +212,7 @@
 ]
 
 // ═════════════════════════════════════════════════════════════════════════════
-// CODE SLIDE — title + note above code block (code = hero element)
+// CODE SLIDE — kicker + title + note + code block (hero element)
 // ═════════════════════════════════════════════════════════════════════════════
 #let code-slide(
   title: [],
@@ -244,12 +220,10 @@
   body: [],
   note: none,
   width: 78%,
-  show-logo: false,
 ) = slide[
-  #sidebar-section(kicker-text)
-  #if show-logo [ #corner-logo() ]
-
   #block(width: width)[
+    #section-kicker[#kicker-text]
+    #v(0.5em)
     #section-title[#title]
     #if note != none [
       #v(0.5em)
@@ -272,12 +246,10 @@
   right-body: [],
   note: none,
   width: 92%,
-  show-logo: false,
 ) = slide[
-  #sidebar-section(kicker-text)
-  #if show-logo [ #corner-logo() ]
-
   #block(width: width)[
+    #section-kicker[#kicker-text]
+    #v(0.5em)
     #section-title[#title]
     #v(0.85em)
     #two-cols(
@@ -292,7 +264,7 @@
 ]
 
 // ═════════════════════════════════════════════════════════════════════════════
-// COMPACT COMPARISON — items as simple text lists inside cards
+// COMPACT COMPARISON — items as bullet lists inside cards
 // ═════════════════════════════════════════════════════════════════════════════
 #let compact-comparison-slide(
   title: [],
@@ -303,29 +275,25 @@
   right-items: (),
   note: none,
   width: 92%,
-  show-logo: false,
 ) = slide[
-  #sidebar-section(kicker-text)
-  #if show-logo [ #corner-logo() ]
-
   #block(width: width)[
+    #section-kicker[#kicker-text]
+    #v(0.5em)
     #section-title[#title]
     #v(0.85em)
     #two-cols(
       [
         #compare-card(left-title, [
-          #for item in left-items [
-            #body-copy[#item]
-            #v(0.4em)
-          ]
+          #for item in left-items {
+            list.item(body-copy[#item])
+          }
         ])
       ],
       [
         #compare-card(right-title, [
-          #for item in right-items [
-            #body-copy[#item]
-            #v(0.4em)
-          ]
+          #for item in right-items {
+            list.item(body-copy[#item])
+          }
         ])
       ],
     )
@@ -337,26 +305,24 @@
 ]
 
 // ═════════════════════════════════════════════════════════════════════════════
-// SYMPTOM SLIDE — title + large-ish statement lines (not bullets)
+// SYMPTOM SLIDE — title + bulleted symptom lines
 // ═════════════════════════════════════════════════════════════════════════════
 #let symptom-slide(
   title: [],
   lines: (),
   kicker-text: [Symptoms],
   width: 78%,
-  show-logo: false,
 ) = slide[
-  #sidebar-section(kicker-text)
-  #if show-logo [ #corner-logo() ]
-
   #block(width: width)[
+    #section-kicker[#kicker-text]
+    #v(0.5em)
     #section-title[#title]
     #if lines.len() > 0 [
       #v(1.0em)
-      #for line in lines [
-        #text(size: 26pt, weight: "medium", fill: text-main)[#line]
-        #v(0.6em)
-      ]
+      #set list(spacing: 0.7em)
+      #for line in lines {
+        list.item(text(size: 22pt, weight: "medium", fill: text-main, line))
+      }
     ]
   ]
 ]
@@ -369,14 +335,12 @@
   note: none,
   steps: (),
   width: 78%,
-  show-logo: true,
 ) = slide[
-  #sidebar-section([Live demo])
-  #if show-logo [ #corner-logo() ]
-
   #v(1fr)
   #v(0.45fr)
   #block(width: width)[
+    #section-kicker[Live demo]
+    #v(0.6em)
     #hero-title[#title]
     #if note != none [
       #v(0.75em)
@@ -398,14 +362,12 @@
 #let appendix-divider(
   title: [Appendix],
   note: [Запасные слайды для вопросов и спокойного разбора.],
-  show-logo: true,
 ) = slide[
-  #sidebar-section([Appendix])
-  #if show-logo [ #corner-logo() ]
-
   #v(1fr)
   #v(0.5fr)
   #block(width: 72%)[
+    #section-kicker[Appendix]
+    #v(0.6em)
     #hero-title[#title]
     #v(0.75em)
     #muted-copy[#note]
@@ -420,14 +382,12 @@
   title: [],
   note: none,
   width: 76%,
-  show-logo: true,
 ) = slide[
-  #sidebar-section([Final])
-  #if show-logo [ #corner-logo() ]
-
   #v(1fr)
   #v(0.5fr)
   #block(width: width)[
+    #section-kicker[Final]
+    #v(0.6em)
     #hero-title[#title]
     #if note != none [
       #v(0.75em)

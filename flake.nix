@@ -10,7 +10,7 @@
   };
 
   outputs =
-    inputs@{
+    {
       self,
       nixpkgs,
       flake-utils,
@@ -56,7 +56,7 @@
             ];
             buildPhase = ''
               mkdir -p $out
-              typst compile ${src} $out/slides.pdf
+              typst compile ${src} $out/${name}.pdf
             '';
             # Фаза install не нужна — PDF уже в $out после buildPhase
             dontInstall = true;

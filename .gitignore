@@ -16,3 +16,4 @@ Cargo.lock
 # Nix files
 result
 result/
+.direnv

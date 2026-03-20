@@ -14,16 +14,12 @@
 #let font-mono = "JetBrains Mono"
 
 // ─── Sidebar geometry ────────────────────────────────────────────────────────
-// The sidebar is a persistent visual strip on the left of every content slide.
-// Its width is ~7.5% of slide width (≈ 1.27cm on 16:9) — enough for a rotated
-// label without stealing space from the content zone.
-#let sidebar-w = 1.27cm
+// Wider sidebar to hold the Nix logo comfortably.
+#let sidebar-w = 2.0cm
 
 // ─── Page margins (content slides) ──────────────────────────────────────────
-// Left margin = sidebar-w + comfortable gap.
-// Right / top / bottom follow 8-pt multiples for grid discipline.
 #let page-margins = (
-  left: sidebar-w + 1.35cm,
+  left: sidebar-w + 0.95cm,
   right: 2.0cm,
   top: 1.6cm,
   bottom: 1.35cm,
@@ -43,8 +39,6 @@
 #let wide-width = 92%
 
 // ─── Typography scale ────────────────────────────────────────────────────────
-// Based on a ~1.35 ratio.  Headline sizes are intentionally large so that
-// even short statements carry visual weight on a 16:9 canvas.
 #let hero-size = 42pt
 #let title-size = 30pt
 #let subtitle-size = 19pt
@@ -59,18 +53,40 @@
 #let panel-inset = 20pt
 
 // ─── Sidebar background (placed as page background on content slides) ───────
+// Contains the colored strip, accent border, and the Nix logo at the bottom.
 #let sidebar-bg = context {
+  // Sidebar strip
   place(
     top + left,
     rect(width: sidebar-w, height: 100%, fill: sidebar-fill),
   )
-  // thin accent line at the right edge of the sidebar
+  // Thin accent line at the right edge of the sidebar
   place(
     top + left,
     dx: sidebar-w,
     line(start: (0pt, 0pt), end: (0pt, 100%), stroke: border + 0.7pt),
   )
+  // Nix logo centered horizontally in the sidebar, near the bottom
+  place(
+    bottom + left,
+    dx: (sidebar-w - 1.4cm) / 2,
+    dy: -0.7cm,
+    image(
+      "../assets/nixos-logomark-rainbow-gradient-recommended.svg",
+      width: 1.4cm,
+      height: 1.4cm,
+      fit: "contain",
+    ),
+  )
 }
+
+// ─── Page number helper (used in footer) ────────────────────────────────────
+#let page-number = context align(
+  right,
+  text(size: 10pt, fill: text-muted, weight: "regular")[
+    #counter(page).display()
+  ],
+)
 
 // ─── Deck show rule (applied via `#show: deck`) ─────────────────────────────
 #let deck(doc) = {
@@ -79,6 +95,7 @@
     margin: page-margins,
     fill: bg,
     background: sidebar-bg,
+    footer: page-number,
   )
 
   set text(
@@ -186,7 +203,7 @@
 
 // ─── Logo helper ─────────────────────────────────────────────────────────────
 #let logo-mark(
-  size: 2.2cm,
+  size: 3.5cm,
   path: "../assets/nixos-logomark-rainbow-gradient-recommended.svg",
 ) = image(
   path,
