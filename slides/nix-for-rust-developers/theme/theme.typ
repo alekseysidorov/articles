@@ -11,41 +11,48 @@
 #let font-mono = "JetBrains Mono"
 
 #let page-margins = (
-  left: 2.3cm,
-  right: 2.3cm,
-  top: 1.6cm,
-  bottom: 1.4cm,
+  left: 1.8cm,
+  right: 2.2cm,
+  top: 1.7cm,
+  bottom: 1.5cm,
 )
 
 #let title-page-margins = (
-  left: 2.3cm,
-  right: 2.3cm,
+  left: 1.8cm,
+  right: 2.2cm,
   top: 1.8cm,
   bottom: 1.5cm,
 )
 
 #let appendix-page-margins = (
-  left: 2.1cm,
-  right: 2.1cm,
-  top: 1.4cm,
-  bottom: 1.2cm,
+  left: 1.8cm,
+  right: 2.2cm,
+  top: 1.5cm,
+  bottom: 1.3cm,
 )
 
-#let content-width = 68%
-#let narrow-width = 60%
-#let wide-width = 76%
-#let appendix-width = 82%
+#let sidebar-width = 18%
+#let sidebar-gap = 1.05cm
+#let content-width = 74%
+#let narrow-width = 62%
+#let wide-width = 80%
+#let appendix-width = 84%
 
-#let hero-size = 38pt
-#let title-size = 28pt
-#let subtitle-size = 18pt
+#let hero-size = 40pt
+#let title-size = 30pt
+#let subtitle-size = 20pt
 #let body-size = 20pt
-#let body-small-size = 15pt
-#let code-size = 13pt
-#let kicker-size = 11pt
+#let body-small-size = 15.5pt
+#let code-size = 14pt
+#let kicker-size = 12pt
 
 #let panel-radius = 12pt
-#let panel-inset = 18pt
+#let panel-inset = 20pt
+
+#let grid-step = 8pt
+#let section-gap = 24pt
+#let block-gap = 32pt
+#let sidebar-line-stroke = border + 0.8pt
 
 #let deck(doc) = {
   set page(

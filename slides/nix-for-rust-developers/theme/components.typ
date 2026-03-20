@@ -1,5 +1,9 @@
 #import "theme.typ": *
 
+#let sidebar-width = 19%
+#let sidebar-gap = 1.1cm
+#let content-width = 1fr
+
 #let slide(body) = [
   #pagebreak()
   #body
@@ -12,37 +16,27 @@
 )
 
 #let text-code(text) = raw-code(text, lang: "text")
-
 #let bash-code(text) = raw-code(text, lang: "bash")
-
 #let yaml-code(text) = raw-code(text, lang: "yaml")
-
 #let nix-code(text) = raw-code(text, lang: "nix")
 
-
-
-#let content-block(body, width: content-width) = block(
-  width: width,
-  body,
-)
-
 #let body-copy(body) = text(
-  size: 15pt,
+  size: 16pt,
   fill: text-main,
   body,
 )
 
 #let muted-copy(body) = text(
-  size: 15pt,
+  size: 16pt,
   fill: text-muted,
   body,
 )
 
-#let section-kicker(body) = kicker(body)
-
-#let section-title(body) = title(body)
-
-#let hero-title(body) = hero(body)
+#let note-copy(body) = text(
+  size: 14pt,
+  fill: text-muted,
+  body,
+)
 
 #let inline-code(body, fill: text-main, size: 15pt, weight: "regular") = text(
   font: font-mono,
@@ -55,51 +49,29 @@
 #let command(body, accent-line: false) = inline-code(
   body,
   fill: if accent-line { accent } else { text-main },
-  size: 13pt,
+  size: 14pt,
 )
 
-#let soft-panel(body, width: 100%, inset: 18pt, radius: 12pt) = block(
-  width: width,
-  fill: surface,
-  stroke: border + 0.8pt,
-  radius: radius,
-  inset: inset,
+#let section-kicker(body) = text(
+  size: 11pt,
+  weight: "medium",
+  tracking: 0.06em,
+  fill: text-muted,
+  upper(body),
+)
+
+#let section-title(body) = text(
+  size: 34pt,
+  weight: "semibold",
+  fill: text-main,
   body,
 )
 
-#let accent-panel(body, width: 100%, inset: 18pt, radius: 12pt) = block(
-  width: width,
-  fill: accent-soft,
-  radius: radius,
-  inset: inset,
+#let hero-title(body) = text(
+  size: 48pt,
+  weight: "semibold",
+  fill: text-main,
   body,
-)
-
-#let code-block(body, width: 100%) = block(
-  width: width,
-  fill: surface,
-  stroke: border + 0.8pt,
-  radius: 12pt,
-  inset: 18pt,
-  [
-    #show raw: set text(font: font-mono, size: 13pt, fill: text-main)
-    #body
-  ],
-)
-
-#let compare-card(label, body) = soft-panel(
-  width: 100%,
-  [
-    #text(size: 11pt, weight: "medium", fill: text-muted, upper(label))
-    #v(0.55em)
-    #body
-  ],
-)
-
-#let two-cols(left, right, gutter: 1.4cm) = grid(
-  columns: (1fr, 1fr),
-  gutter: gutter,
-  left, right,
 )
 
 #let logo-mark(size: 1.8cm) = image(
@@ -109,12 +81,117 @@
   fit: "contain",
 )
 
-#let corner-logo(size: 1.8cm) = place(
-  top + right,
-  dx: -0.1cm,
-  dy: 0.05cm,
-  box(inset: 0pt)[#logo-mark(size: size)],
+#let soft-panel(body, width: 100%, inset: 22pt, radius: 12pt) = block(
+  width: width,
+  fill: surface,
+  stroke: border + 0.8pt,
+  radius: radius,
+  inset: inset,
+  body,
 )
+
+#let accent-panel(body, width: 100%, inset: 22pt, radius: 12pt) = block(
+  width: width,
+  fill: accent-soft,
+  radius: radius,
+  inset: inset,
+  body,
+)
+
+#let code-block(body, width: 100%) = block(
+  width: width,
+  fill: accent-soft,
+  stroke: border + 0.8pt,
+  radius: 14pt,
+  inset: 24pt,
+  [
+    #show raw: set text(font: font-mono, size: 16pt, fill: text-main)
+    #body
+  ],
+)
+
+#let compare-card(label, body) = soft-panel(
+  width: 100%,
+  [
+    #text(size: 11pt, weight: "medium", fill: text-muted, upper(label))
+    #v(0.7em)
+    #body
+  ],
+)
+
+#let sidebar(body) = block(
+  width: 100%,
+  [
+    #body
+  ],
+)
+
+#let sidebar-label(body) = [
+  #section-kicker[#body]
+]
+
+#let sidebar-meta(body) = [
+  #v(0.7em)
+  #note-copy[#body]
+]
+
+#let sidebar-divider() = line(
+  length: 100%,
+  stroke: border + 0.8pt,
+  angle: 90deg,
+)
+
+#let content-block(body) = block(
+  width: 100%,
+  body,
+)
+
+#let two-cols(left, right, gutter: 1.05cm) = grid(
+  columns: (1fr, 1fr),
+  gutter: gutter,
+  left, right,
+)
+
+#let shell-lines(lines, accent-index: none) = [
+  #for (idx, line) in lines.enumerate() [
+    #if accent-index != none and idx == accent-index [
+      #command(line, accent-line: true)
+    ] else [
+      #command(line)
+    ]
+    #if idx + 1 < lines.len() [#linebreak()]
+  ]
+]
+
+#let with-sidebar(label, body, sidebar-note: none, show-logo: false) = [
+  #if show-logo [
+    #place(
+      top + right,
+      dx: -0.2cm,
+      dy: 0.1cm,
+      box(inset: 0pt)[#logo-mark(size: 2cm)],
+    )
+  ]
+
+  #grid(
+    columns: (sidebar-width, content-width),
+    gutter: sidebar-gap,
+    align: top + left,
+    [
+      #sidebar[
+        #sidebar-label[#label]
+        #if sidebar-note != none [
+          #sidebar-meta[#sidebar-note]
+        ]
+      ]
+    ],
+    [
+      #content-block[
+        #body
+      ]
+    ],
+  )
+]
 
 #let title-slide(
   title: [],
@@ -124,46 +201,55 @@
   show-logo: true,
 ) = [
   #if show-logo [
-    #corner-logo(size: 2.3cm)
+    #place(
+      top + right,
+      dx: -0.15cm,
+      dy: 0.05cm,
+      box(inset: 0pt)[#logo-mark(size: 2.5cm)],
+    )
   ]
 
-  #v(1.15fr)
-  #content-block(width: 72%)[
-    #section-kicker[Nix × Rust]
-    #v(0.85em)
-    #text(size: 44pt, weight: "semibold", fill: text-main)[#title]
-    #v(0.6em)
-    #text(size: subtitle-size, fill: text-muted)[#subtitle]
-    #v(1.55em)
-    #rule()
-    #v(1em)
-    #text(size: 14pt, fill: text-main)[#author]
-    #v(0.35em)
-    #text(size: 12pt, fill: text-muted)[#year]
-  ]
+  #v(0.45cm)
+  #grid(
+    columns: (sidebar-width, content-width),
+    gutter: sidebar-gap,
+    align: top + left,
+    [
+      #sidebar[
+        #section-kicker[Nix × Rust]
+        #v(1.2em)
+        #note-copy[#year]
+      ]
+    ],
+    [
+      #content-block[
+        #v(0.5cm)
+        #hero-title[#title]
+        #v(0.45em)
+        #text(size: 23pt, fill: text-main, weight: "medium")[#subtitle]
+        #v(1.3em)
+        #rule(length: 72%)
+        #v(0.9em)
+        #text(size: 15pt, fill: text-main)[#author]
+      ]
+    ],
+  )
   #v(1fr)
 ]
 
 #let big-idea(
   title: [],
   kicker-text: [Big idea],
-  width: 62%,
   note: none,
-  alignment: left,
+  width: 78%,
   show-logo: false,
 ) = slide[
-  #if show-logo [
-    #corner-logo()
-  ]
-  #v(0.8cm)
-  #align(alignment)[
-    #content-block(width: width)[
-      #section-kicker[#kicker-text]
-      #v(0.9em)
-      #text(size: 44pt, weight: "semibold", fill: text-main)[#title]
+  #with-sidebar(kicker-text, show-logo: show-logo)[
+    #block(width: width)[
+      #hero-title[#title]
       #if note != none [
-        #v(0.95em)
-        #muted-copy[#note]
+        #v(0.85em)
+        #subtitle[#note]
       ]
     ]
   ]
@@ -175,44 +261,28 @@
   lead: none,
   points: (),
   aside: none,
-  width: 56%,
+  width: 78%,
   show-logo: false,
 ) = slide[
-  #if show-logo [
-    #corner-logo()
-  ]
-
-  #v(0.2cm)
-  #content-block(width: width)[
-    #if kicker-text != none [
-      #section-kicker[#kicker-text]
-      #v(0.6em)
+  #with-sidebar(kicker-text, show-logo: show-logo)[
+    #block(width: width)[
+      #section-title[#title]
+      #if lead != none [
+        #v(0.65em)
+        #subtitle[#lead]
+      ]
+      #if points.len() > 0 [
+        #v(1.0em)
+        #for point in points [
+          #body-copy[#point]
+          #v(0.55em)
+        ]
+      ]
+      #if aside != none [
+        #v(1.0em)
+        #accent-panel(width: 82%)[#aside]
+      ]
     ]
-    #section-title[#title]
-    #if lead != none [
-      #v(0.7em)
-      #muted-copy[#lead]
-    ]
-    #if points.len() > 0 [
-      #v(0.95em)
-      #for point in points {
-        list.item(point)
-      }
-    ]
-  ]
-
-  #if aside != none [
-    #place(
-      right + bottom,
-      dx: -0.45cm,
-      dy: -0.1cm,
-      accent-panel(
-        width: 5.6cm,
-        [
-          #aside
-        ],
-      ),
-    )
   ]
 ]
 
@@ -221,23 +291,18 @@
   kicker-text: [Code],
   body: [],
   note: none,
-  width: 60%,
+  width: 82%,
   show-logo: false,
 ) = slide[
-  #if show-logo [
-    #corner-logo()
-  ]
-
-  #v(0.2cm)
-  #content-block(width: width)[
-    #section-kicker[#kicker-text]
-    #v(0.6em)
-    #section-title[#title]
-    #v(0.8em)
-    #code-block[#body]
-    #if note != none [
-      #v(0.7em)
-      #muted-copy[#note]
+  #with-sidebar(kicker-text, show-logo: show-logo)[
+    #block(width: width)[
+      #section-title[#title]
+      #if note != none [
+        #v(0.55em)
+        #subtitle[#note]
+      ]
+      #v(0.95em)
+      #code-block[#body]
     ]
   ]
 ]
@@ -250,110 +315,25 @@
   right-title: [],
   right-body: [],
   note: none,
-  width: 72%,
+  width: 92%,
   show-logo: false,
 ) = slide[
-  #if show-logo [
-    #corner-logo()
-  ]
-
-  #v(0.15cm)
-  #content-block(width: width)[
-    #section-kicker[#kicker-text]
-    #v(0.6em)
-    #section-title[#title]
-    #v(0.85em)
-    #two-cols(
-      [
-        #compare-card(left-title, left-body)
-      ],
-      [
-        #compare-card(right-title, right-body)
-      ],
-      gutter: 1.1cm,
-    )
-    #if note != none [
-      #v(0.8em)
-      #muted-copy[#note]
-    ]
-  ]
-]
-
-#let demo-slide(
-  title: [],
-  steps: (),
-  note: none,
-  width: content-width,
-  show-logo: true,
-) = slide[
-  #if show-logo [
-    #corner-logo(size: 2cm)
-  ]
-
-  #v(0.2cm)
-  #content-block(width: width)[
-    #section-kicker[Live demo]
-    #v(0.7em)
-    #hero-title[#title]
-    #if steps.len() > 0 [
-      #v(1em)
-      #for step in steps {
-        list.item(step)
-      }
-    ]
-    #if note != none [
-      #v(1em)
-      #muted-copy[#note]
-    ]
-  ]
-]
-
-#let transition-slide(
-  title: [],
-  note: none,
-  alignment: center,
-  width: 68%,
-  show-logo: false,
-) = slide[
-  #if show-logo [
-    #corner-logo()
-  ]
-
-  #v(1fr)
-  #align(alignment)[
-    #content-block(width: width)[
-      #text(size: 42pt, weight: "semibold", fill: text-main)[#title]
+  #with-sidebar(kicker-text, show-logo: show-logo)[
+    #block(width: width)[
+      #section-title[#title]
       #if note != none [
-        #v(0.85em)
-        #muted-copy[#note]
-      ]
-    ]
-  ]
-  #v(1fr)
-]
-
-#let symptom-slide(
-  title: [],
-  lines: (),
-  kicker-text: [Symptoms],
-  width: 58%,
-  show-logo: false,
-) = slide[
-  #if show-logo [
-    #corner-logo()
-  ]
-
-  #v(0.6cm)
-  #content-block(width: width)[
-    #section-kicker[#kicker-text]
-    #v(0.8em)
-    #section-title[#title]
-    #if lines.len() > 0 [
-      #v(1.05em)
-      #for line in lines [
-        #text(size: 25pt, weight: "medium", fill: text-main)[#line]
         #v(0.55em)
+        #subtitle[#note]
       ]
+      #v(0.95em)
+      #two-cols(
+        [
+          #compare-card(left-title, left-body)
+        ],
+        [
+          #compare-card(right-title, right-body)
+        ],
+      )
     ]
   ]
 ]
@@ -366,41 +346,99 @@
   right-title: [],
   right-items: (),
   note: none,
-  width: 70%,
+  width: 92%,
   show-logo: false,
 ) = slide[
-  #if show-logo [
-    #corner-logo()
+  #with-sidebar(kicker-text, show-logo: show-logo)[
+    #block(width: width)[
+      #section-title[#title]
+      #if note != none [
+        #v(0.55em)
+        #subtitle[#note]
+      ]
+      #v(0.95em)
+      #two-cols(
+        [
+          #compare-card(left-title, [
+            #for item in left-items [
+              #body-copy[#item]
+              #v(0.45em)
+            ]
+          ])
+        ],
+        [
+          #compare-card(right-title, [
+            #for item in right-items [
+              #body-copy[#item]
+              #v(0.45em)
+            ]
+          ])
+        ],
+      )
+    ]
   ]
+]
 
-  #v(0.15cm)
-  #content-block(width: width)[
-    #section-kicker[#kicker-text]
-    #v(0.6em)
-    #section-title[#title]
-    #v(0.85em)
-    #two-cols(
-      [
-        #compare-card(left-title, [
-          #for item in left-items [
-            #body-copy[#item]
-            #v(0.35em)
-          ]
-        ])
-      ],
-      [
-        #compare-card(right-title, [
-          #for item in right-items [
-            #body-copy[#item]
-            #v(0.35em)
-          ]
-        ])
-      ],
-      gutter: 1.1cm,
-    )
-    #if note != none [
-      #v(0.8em)
-      #muted-copy[#note]
+#let symptom-slide(
+  title: [],
+  lines: (),
+  kicker-text: [Symptoms],
+  width: 74%,
+  show-logo: false,
+) = slide[
+  #with-sidebar(kicker-text, show-logo: show-logo)[
+    #block(width: width)[
+      #section-title[#title]
+      #if lines.len() > 0 [
+        #v(1.0em)
+        #for line in lines [
+          #text(size: 28pt, weight: "medium", fill: text-main)[#line]
+          #v(0.55em)
+        ]
+      ]
+    ]
+  ]
+]
+
+#let transition-slide(
+  title: [],
+  note: none,
+  width: 74%,
+  kicker-text: [Transition],
+  show-logo: false,
+) = slide[
+  #with-sidebar(kicker-text, show-logo: show-logo)[
+    #block(width: width)[
+      #hero-title[#title]
+      #if note != none [
+        #v(0.8em)
+        #subtitle[#note]
+      ]
+    ]
+  ]
+]
+
+#let demo-slide(
+  title: [],
+  steps: (),
+  note: none,
+  width: 76%,
+  show-logo: true,
+) = slide[
+  #with-sidebar([Live demo], show-logo: show-logo)[
+    #block(width: width)[
+      #hero-title[#title]
+      #if note != none [
+        #v(0.8em)
+        #subtitle[#note]
+      ]
+      #if steps.len() > 0 [
+        #v(1.0em)
+        #for step in steps [
+          #body-copy[#step]
+          #v(0.5em)
+        ]
+      ]
     ]
   ]
 ]
@@ -410,72 +448,55 @@
   left: [],
   right: [],
   note: none,
-  width: 62%,
+  width: 78%,
   show-logo: false,
 ) = slide[
-  #if show-logo [
-    #corner-logo()
-  ]
-
-  #v(0.25cm)
-  #content-block(width: width)[
-    #section-kicker[FAQ]
-    #v(0.65em)
-    #section-title[#title]
-    #v(1em)
-    #soft-panel[
-      #strong[#left]
-      #v(0.45em)
-      #muted-copy[#right]
-    ]
-    #if note != none [
-      #v(0.8em)
-      #muted-copy[#note]
+  #with-sidebar([FAQ], show-logo: show-logo)[
+    #block(width: width)[
+      #section-title[#title]
+      #v(1em)
+      #soft-panel(width: 76%)[
+        #text(size: 22pt, weight: "semibold", fill: text-main)[#left]
+        #v(0.5em)
+        #subtitle[#right]
+      ]
+      #if note != none [
+        #v(0.8em)
+        #note-copy[#note]
+      ]
     ]
   ]
 ]
 
 #let appendix-divider(
-  title: [Дополнительные материалы],
-  note: [Дальше — запасные слайды для вопросов и обсуждения.],
+  title: [Appendix],
+  note: [Спокойный разбор после demo.],
   show-logo: true,
 ) = slide[
-  #if show-logo [
-    #corner-logo(size: 2.1cm)
+  #with-sidebar([Appendix], sidebar-note: note, show-logo: show-logo)[
+    #block(width: 74%)[
+      #hero-title[#title]
+    ]
   ]
-
-  #v(1fr)
-  #content-block(width: 72%)[
-    #section-kicker[Appendix]
-    #v(0.85em)
-    #hero-title[#title]
-    #v(0.8em)
-    #muted-copy[#note]
-  ]
-  #v(1fr)
 ]
 
 #let appendix-slide(
   title: [],
   lead: none,
   body: [],
-  width: 76%,
+  width: 84%,
   show-logo: false,
 ) = slide[
-  #if show-logo [
-    #corner-logo()
-  ]
-
-  #content-block(width: width)[
-    #section-kicker[Appendix]
-    #v(0.7em)
-    #section-title[#title]
-    #if lead != none [
-      #v(0.75em)
-      #muted-copy[#lead]
+  #with-sidebar([Appendix], show-logo: show-logo)[
+    #block(width: width)[
+      #section-title[#title]
+      #if lead != none [
+        #v(0.6em)
+        #subtitle[#lead]
+      ]
+      #v(0.95em)
+      #body
     ]
-    #v(0.9em)
-    #body
   ]
 ]
 
@@ -483,26 +504,23 @@
   title: [],
   lead: none,
   points: (),
-  width: 68%,
+  width: 78%,
   show-logo: false,
 ) = slide[
-  #if show-logo [
-    #corner-logo()
-  ]
-
-  #content-block(width: width)[
-    #section-kicker[Appendix]
-    #v(0.7em)
-    #section-title[#title]
-    #if lead != none [
-      #v(0.8em)
-      #muted-copy[#lead]
-    ]
-    #if points.len() > 0 [
-      #v(1.05em)
-      #for point in points {
-        list.item(point)
-      }
+  #with-sidebar([Appendix], show-logo: show-logo)[
+    #block(width: width)[
+      #section-title[#title]
+      #if lead != none [
+        #v(0.65em)
+        #subtitle[#lead]
+      ]
+      #if points.len() > 0 [
+        #v(0.95em)
+        #for point in points [
+          #body-copy[#point]
+          #v(0.5em)
+        ]
+      ]
     ]
   ]
 ]
@@ -510,21 +528,16 @@
 #let final-slide(
   title: [],
   note: none,
-  width: 64%,
+  width: 76%,
   show-logo: true,
 ) = slide[
-  #if show-logo [
-    #corner-logo(size: 2cm)
-  ]
-
-  #v(0.95cm)
-  #content-block(width: width)[
-    #section-kicker[Final idea]
-    #v(0.8em)
-    #text(size: 42pt, weight: "semibold", fill: text-main)[#title]
-    #if note != none [
-      #v(0.8em)
-      #muted-copy[#note]
+  #with-sidebar([Final], show-logo: show-logo)[
+    #block(width: width)[
+      #hero-title[#title]
+      #if note != none [
+        #v(0.8em)
+        #subtitle[#note]
+      ]
     ]
   ]
 ]

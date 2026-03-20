@@ -15,6 +15,7 @@
   title: [У проекта должен быть один источник правды.],
   note: [
     Проблема обычно уже не в коде.
+
     Проблема в среде вокруг него.
   ],
 )
@@ -23,12 +24,12 @@
   kicker-text: [Problem],
   title: [Проект живёт сразу в нескольких описаниях],
   lead: [
-    `Cargo.toml` — это не полное описание проекта.
+    `Cargo.toml` — это только часть картины.
   ],
   points: (
     [`Cargo.toml` знает только про crates],
-    [toolchain, system deps и scripts существут отдельно],
-    [CI часто проверяет не совсем то, что вы можете запустить локально],
+    [toolchain, system deps и scripts живут отдельно],
+    [CI часто проверяет не совсем то, что можно запустить локально],
   ),
 )
 
@@ -59,16 +60,27 @@
     [команды проекта],
     [CI checks],
   ),
-  note: [Cargo описывает сборку. Nix описывает среду, в которой эта сборка вообще возможна.],
+  note: [
+    Cargo описывает сборку.
+    Nix описывает среду, в которой эта сборка вообще возможна.
+  ],
 )
 
-#big-idea(
+#compact-comparison-slide(
+  title: [Flake],
   kicker-text: [Definition],
-  title: [Flake — это воспроизводимая точка входа в проект.],
-  note: [
-    `flake.nix` — описание.
-    `flake.lock` — фиксация входов.
-  ],
+  left-title: [Файлы],
+  left-items: (
+    [`flake.nix`],
+    [`flake.lock`],
+  ),
+  right-title: [Смысл],
+  right-items: (
+    [описание проекта],
+    [фиксация входов],
+    [воспроизводимая точка входа],
+  ),
+  note: [Не “собери что-нибудь похожее”, а “подними среду из зафиксированных входов”.],
 )
 
 #code-slide(
@@ -141,15 +153,22 @@
   ],
 )
 
-#explain-slide(
+#compact-comparison-slide(
+  title: [`nix develop` как точка входа],
   kicker-text: [devShell],
-  title: [`nix develop` — нормальная точка входа],
-  lead: none,
-  points: (
+  left-title: [Что даёт],
+  left-items: (
     [Rust toolchain],
-    [`clippy`, `rustfmt`, `taplo`, `typos`],
-    [`openssl`, `protobuf`, `pkg-config`, `clang`],
+    [clippy, rustfmt, taplo, typos],
+    [openssl, protobuf, pkg-config, clang],
   ),
+  right-title: [Что меняется],
+  right-items: (
+    [одна команда входа],
+    [меньше ручной настройки],
+    [одинаковая среда локально и в CI],
+  ),
+  note: [Вместо README с длинной инструкцией появляется нормальная точка входа.],
 )
 
 #code-slide(
@@ -187,7 +206,7 @@
     [packages],
     [одно описание],
   ),
-  note: none,
+  note: [Главная разница — количество мест, где живёт истина о проекте.],
 )
 
 #compact-comparison-slide(
@@ -207,7 +226,7 @@
     [gstreamer],
     [macOS + Linux],
   ),
-  note: none,
+  note: [Чем больше native deps и платформ, тем быстрее это начинает окупаться.],
 )
 
 #explain-slide(
@@ -215,6 +234,7 @@
   title: [CI — исполнитель, а не источник правды],
   lead: [
     CI не описывает проект.
+
     Он его исполняет.
   ],
   points: (
@@ -240,19 +260,27 @@
   ],
   note: [
     Не второй список проверок в YAML.
+
     Те же самые проверки.
   ],
 )
 
-#explain-slide(
-  kicker-text: [FAQ],
+#compact-comparison-slide(
   title: [Nix ≠ NixOS],
-  lead: none,
-  points: (
-    [`Nix` — инструмент],
-    [`NixOS` — дистрибутив],
-    [flake'и и `nix develop` работают и на macOS, и на обычном Linux],
+  kicker-text: [FAQ],
+  left-title: [Nix],
+  left-items: (
+    [инструмент],
+    [пакеты и сборки],
+    [dev/build environment],
   ),
+  right-title: [NixOS],
+  right-items: (
+    [дистрибутив],
+    [Linux вокруг Nix],
+    [не обязателен для flakes],
+  ),
+  note: [`nix develop` и flakes работают и на macOS, и на обычном Linux.],
 )
 
 #comparison-slide(
@@ -285,36 +313,40 @@
   ],
   note: [
     Это разные слои.
+
     Они не обязаны конкурировать.
   ],
 )
 
-#code-slide(
+#compact-comparison-slide(
   title: [`flake.lock` важен не меньше, чем `Cargo.lock`],
   kicker-text: [Lockfile],
-  body: [
-    #text-code(
-      ```text
-      Cargo.lock  → crates
-      flake.lock  → dev/build environment
-      ```.text,
-    )
-  ],
-  note: [
-    Это lockfile уровнем выше.
-  ],
+  left-title: [Cargo.lock],
+  left-items: (
+    [crates],
+    [Rust dependency graph],
+  ),
+  right-title: [flake.lock],
+  right-items: (
+    [dev/build environment],
+    [зафиксированные входы проекта],
+  ),
+  note: [Это lockfile уровнем выше.],
 )
 
 #explain-slide(
   kicker-text: [Architecture],
   title: [Почему это воспроизводимо],
-  lead: none,
+  lead: [
+    Воспроизводимость здесь не на словах.
+
+    Она следует из модели сборки.
+  ],
   points: (
     [зависимости описаны явно],
     [артефакты живут в `/nix/store/...`],
     [сборка идёт в sandbox],
     [без доступа к сети],
-    [меньше неявных зависимостей от системы],
   ),
   aside: [
     #text(size: 11pt, weight: "medium", fill: accent, upper([Build model]))
