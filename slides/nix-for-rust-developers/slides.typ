@@ -78,7 +78,13 @@
   title: [`nix develop`],
   kicker-text: [Workflow],
   body: [
-    #raw-code("$ git clone <repo>\n$ nix develop\n$ cargo test", lang: "bash")
+    #bash-code(
+      ```text
+$ git clone <repo>
+$ nix develop
+$ cargo test
+      ```.text,
+    )
   ],
   note: [
     Для нового разработчика это означает:
@@ -90,7 +96,12 @@
   title: [Минимальный CI],
   kicker-text: [Workflow],
   body: [
-    #raw-code("- uses: cachix/install-nix-action@v27\n- run: nix flake check", lang: "yaml")
+    #yaml-code(
+      ```text
+- uses: cachix/install-nix-action@v27
+- run: nix flake check
+      ```.text,
+    )
   ],
   note: [
     CI перестаёт быть местом, где руками дублируют логику проекта.
@@ -128,7 +139,7 @@
 #code-slide(
   title: [Что такое flake на практике],
   body: [
-    #raw-code(
+    #nix-code(
       ```text
 flake.nix
 flake.lock
@@ -140,7 +151,6 @@ outputs = {
   apps      = ...
 }
       ```.text,
-      lang: "nix",
     )
   ],
   note: [
@@ -239,7 +249,15 @@ outputs = {
 #code-slide(
   title: [Идея checks],
   body: [
-    #raw-code("checks = {\n  fmt = ...\n  clippy = ...\n  test = ...\n}", lang: "nix")
+    #nix-code(
+      ```text
+checks = {
+  fmt = ...
+  clippy = ...
+  test = ...
+}
+      ```.text,
+    )
   ],
   note: [
     Один и тот же набор можно запускать локально и в CI.
@@ -287,7 +305,12 @@ outputs = {
 #code-slide(
   title: [`flake.lock` важен не меньше, чем `Cargo.lock`],
   body: [
-    #raw-code("Cargo.lock  -> фиксирует crates\nflake.lock  -> фиксирует dev/build environment", lang: "text")
+    #text-code(
+      ```text
+Cargo.lock  -> фиксирует crates
+flake.lock  -> фиксирует dev/build environment
+      ```.text,
+    )
   ],
   note: [
     По смыслу это lockfile уровнем выше:
@@ -312,7 +335,13 @@ outputs = {
 #code-slide(
   title: [`direnv` для ежедневной работы],
   body: [
-    #raw-code(".envrc\n\nuse flake", lang: "bash")
+    #bash-code(
+      ```text
+.envrc
+
+use flake
+      ```.text,
+    )
   ],
   note: [
     Тогда среда активируется автоматически
@@ -323,7 +352,13 @@ outputs = {
 #code-slide(
   title: [Nix как launcher инструментов],
   body: [
-    #raw-code("nix run nixpkgs#jq\nnix run nixpkgs#ripgrep\nnix run nixpkgs#nodejs", lang: "bash")
+    #bash-code(
+      ```text
+nix run nixpkgs#jq
+nix run nixpkgs#ripgrep
+nix run nixpkgs#nodejs
+      ```.text,
+    )
   ],
   note: [
     Удобно и для локальной работы,

@@ -11,6 +11,16 @@
   lang: lang,
 )
 
+#let text-code(text) = raw-code(text, lang: "text")
+
+#let bash-code(text) = raw-code(text, lang: "bash")
+
+#let yaml-code(text) = raw-code(text, lang: "yaml")
+
+#let nix-code(text) = raw-code(text, lang: "nix")
+
+
+
 #let content-block(body, width: content-width) = block(
   width: width,
   body,
