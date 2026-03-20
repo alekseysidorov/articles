@@ -167,17 +167,24 @@
       #v(0.6em)
       #muted-copy[#lead]
     ]
-    #if items.len() > 0 [
-      #v(0.9em)
+    #v(0.9em)
+    #if aside != none [
+      #grid(
+        columns: (1.55fr, 0.95fr),
+        gutter: 0.9cm,
+        [
+          #for item in items {
+            list.item(item)
+          }
+        ],
+        [
+          #accent-panel(width: 100%)[#aside]
+        ],
+      )
+    ] else if items.len() > 0 [
       #for item in items {
         list.item(item)
       }
-    ]
-    #if aside != none [
-      #v(1.1em)
-      #align(right)[
-        #accent-panel(width: 7cm)[#aside]
-      ]
     ]
   ]
 ]
