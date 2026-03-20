@@ -33,7 +33,11 @@
             # Берём весь репозиторий как источник —
             # слайды могут ссылаться на общие ресурсы (шрифты, картинки)
             src = ./.;
-            buildInputs = [ pkgs.typst ];
+            buildInputs = with pkgs; [
+              typst
+              # route159 — официальный шрифт NixOS, используется в slides.typ
+              route159
+            ];
             buildPhase = ''
               mkdir -p $out
               typst compile ${src} $out/slides.pdf
@@ -60,6 +64,8 @@
             # Fontconfig нужен, чтобы Typst корректно находил
             # системные шрифты на Linux и в nix-окружении
             fontconfig
+            # Route 159 — официальный шрифт NixOS из branding guide
+            route159
           ];
         };
 
