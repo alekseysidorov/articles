@@ -78,9 +78,7 @@
   title: [`nix develop`],
   kicker-text: [Workflow],
   body: [
-$ git clone <repo>
-#command("$ nix develop", accent-line: true)
-$ cargo test
+    #raw-code("$ git clone <repo>\n$ nix develop\n$ cargo test", lang: "bash")
   ],
   note: [
     Для нового разработчика это означает:
@@ -92,8 +90,7 @@ $ cargo test
   title: [Минимальный CI],
   kicker-text: [Workflow],
   body: [
-- uses: cachix/install-nix-action@v27
-#command("- run: nix flake check", accent-line: true)
+    #raw-code("- uses: cachix/install-nix-action@v27\n- run: nix flake check", lang: "yaml")
   ],
   note: [
     CI перестаёт быть местом, где руками дублируют логику проекта.
@@ -131,6 +128,8 @@ $ cargo test
 #code-slide(
   title: [Что такое flake на практике],
   body: [
+    #raw-code(
+      ```text
 flake.nix
 flake.lock
 
@@ -140,6 +139,9 @@ outputs = {
   packages  = ...
   apps      = ...
 }
+      ```.text,
+      lang: "nix",
+    )
   ],
   note: [
     Важная часть — не синтаксис, а то,
@@ -237,11 +239,7 @@ outputs = {
 #code-slide(
   title: [Идея checks],
   body: [
-checks = {
-  fmt = ...
-  clippy = ...
-  test = ...
-}
+    #raw-code("checks = {\n  fmt = ...\n  clippy = ...\n  test = ...\n}", lang: "nix")
   ],
   note: [
     Один и тот же набор можно запускать локально и в CI.
@@ -289,8 +287,7 @@ checks = {
 #code-slide(
   title: [`flake.lock` важен не меньше, чем `Cargo.lock`],
   body: [
-Cargo.lock  -> фиксирует crates
-flake.lock  -> фиксирует dev/build environment
+    #raw-code("Cargo.lock  -> фиксирует crates\nflake.lock  -> фиксирует dev/build environment", lang: "text")
   ],
   note: [
     По смыслу это lockfile уровнем выше:
@@ -315,9 +312,7 @@ flake.lock  -> фиксирует dev/build environment
 #code-slide(
   title: [`direnv` для ежедневной работы],
   body: [
-.envrc
-
-use flake
+    #raw-code(".envrc\n\nuse flake", lang: "bash")
   ],
   note: [
     Тогда среда активируется автоматически
@@ -328,9 +323,7 @@ use flake
 #code-slide(
   title: [Nix как launcher инструментов],
   body: [
-nix run nixpkgs#jq
-nix run nixpkgs#ripgrep
-nix run nixpkgs#nodejs
+    #raw-code("nix run nixpkgs#jq\nnix run nixpkgs#ripgrep\nnix run nixpkgs#nodejs", lang: "bash")
   ],
   note: [
     Удобно и для локальной работы,

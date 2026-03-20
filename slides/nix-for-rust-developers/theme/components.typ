@@ -5,6 +5,12 @@
   #body
 ]
 
+#let raw-code(text, lang: none) = raw(
+  text,
+  block: true,
+  lang: lang,
+)
+
 #let content-block(body, width: content-width) = block(
   width: width,
   body,
@@ -66,7 +72,7 @@
   radius: 12pt,
   inset: 18pt,
   [
-    #set text(font: font-mono, size: 13pt, fill: text-main)
+    #show raw: set text(font: font-mono, size: 13pt, fill: text-main)
     #body
   ],
 )
@@ -118,7 +124,7 @@
     #v(0.85em)
     #text(size: 44pt, weight: "semibold", fill: text-main)[#title]
     #v(0.6em)
-    #subtitle[#subtitle]
+    #text(size: subtitle-size, fill: text-muted)[#subtitle]
     #v(1.55em)
     #rule()
     #v(1em)
