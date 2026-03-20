@@ -147,7 +147,7 @@
 #let big-idea(
   title: [],
   kicker-text: [Big idea],
-  width: 68%,
+  width: 62%,
   note: none,
   alignment: left,
   show-logo: false,
@@ -155,14 +155,14 @@
   #if show-logo [
     #corner-logo()
   ]
-  #v(0.45cm)
+  #v(0.8cm)
   #align(alignment)[
     #content-block(width: width)[
       #section-kicker[#kicker-text]
-      #v(0.75em)
-      #hero-title[#title]
+      #v(0.9em)
+      #text(size: 44pt, weight: "semibold", fill: text-main)[#title]
       #if note != none [
-        #v(0.8em)
+        #v(0.95em)
         #muted-copy[#note]
       ]
     ]
@@ -175,25 +175,26 @@
   lead: none,
   points: (),
   aside: none,
-  width: narrow-width,
+  width: 56%,
   show-logo: false,
 ) = slide[
   #if show-logo [
     #corner-logo()
   ]
 
+  #v(0.2cm)
   #content-block(width: width)[
     #if kicker-text != none [
       #section-kicker[#kicker-text]
-      #v(0.7em)
+      #v(0.6em)
     ]
     #section-title[#title]
     #if lead != none [
-      #v(0.8em)
+      #v(0.7em)
       #muted-copy[#lead]
     ]
     #if points.len() > 0 [
-      #v(1.05em)
+      #v(0.95em)
       #for point in points {
         list.item(point)
       }
@@ -203,10 +204,10 @@
   #if aside != none [
     #place(
       right + bottom,
-      dx: -0.3cm,
-      dy: -0.15cm,
+      dx: -0.45cm,
+      dy: -0.1cm,
       accent-panel(
-        width: 5.9cm,
+        width: 5.6cm,
         [
           #aside
         ],
@@ -220,21 +221,22 @@
   kicker-text: [Code],
   body: [],
   note: none,
-  width: content-width,
+  width: 60%,
   show-logo: false,
 ) = slide[
   #if show-logo [
     #corner-logo()
   ]
 
+  #v(0.2cm)
   #content-block(width: width)[
     #section-kicker[#kicker-text]
-    #v(0.7em)
+    #v(0.6em)
     #section-title[#title]
-    #v(0.9em)
+    #v(0.8em)
     #code-block[#body]
     #if note != none [
-      #v(0.8em)
+      #v(0.7em)
       #muted-copy[#note]
     ]
   ]
@@ -248,18 +250,19 @@
   right-title: [],
   right-body: [],
   note: none,
-  width: wide-width,
+  width: 72%,
   show-logo: false,
 ) = slide[
   #if show-logo [
     #corner-logo()
   ]
 
+  #v(0.15cm)
   #content-block(width: width)[
     #section-kicker[#kicker-text]
-    #v(0.7em)
+    #v(0.6em)
     #section-title[#title]
-    #v(1em)
+    #v(0.85em)
     #two-cols(
       [
         #compare-card(left-title, left-body)
@@ -267,9 +270,10 @@
       [
         #compare-card(right-title, right-body)
       ],
+      gutter: 1.1cm,
     )
     #if note != none [
-      #v(0.95em)
+      #v(0.8em)
       #muted-copy[#note]
     ]
   ]
@@ -308,7 +312,7 @@
   title: [],
   note: none,
   alignment: center,
-  width: 72%,
+  width: 68%,
   show-logo: false,
 ) = slide[
   #if show-logo [
@@ -318,7 +322,7 @@
   #v(1fr)
   #align(alignment)[
     #content-block(width: width)[
-      #hero-title[#title]
+      #text(size: 42pt, weight: "semibold", fill: text-main)[#title]
       #if note != none [
         #v(0.85em)
         #muted-copy[#note]
@@ -326,6 +330,109 @@
     ]
   ]
   #v(1fr)
+]
+
+#let symptom-slide(
+  title: [],
+  lines: (),
+  kicker-text: [Symptoms],
+  width: 58%,
+  show-logo: false,
+) = slide[
+  #if show-logo [
+    #corner-logo()
+  ]
+
+  #v(0.6cm)
+  #content-block(width: width)[
+    #section-kicker[#kicker-text]
+    #v(0.8em)
+    #section-title[#title]
+    #if lines.len() > 0 [
+      #v(1.05em)
+      #for line in lines [
+        #text(size: 25pt, weight: "medium", fill: text-main)[#line]
+        #v(0.55em)
+      ]
+    ]
+  ]
+]
+
+#let compact-comparison-slide(
+  title: [],
+  kicker-text: [Comparison],
+  left-title: [],
+  left-items: (),
+  right-title: [],
+  right-items: (),
+  note: none,
+  width: 70%,
+  show-logo: false,
+) = slide[
+  #if show-logo [
+    #corner-logo()
+  ]
+
+  #v(0.15cm)
+  #content-block(width: width)[
+    #section-kicker[#kicker-text]
+    #v(0.6em)
+    #section-title[#title]
+    #v(0.85em)
+    #two-cols(
+      [
+        #compare-card(left-title, [
+          #for item in left-items [
+            #body-copy[#item]
+            #v(0.35em)
+          ]
+        ])
+      ],
+      [
+        #compare-card(right-title, [
+          #for item in right-items [
+            #body-copy[#item]
+            #v(0.35em)
+          ]
+        ])
+      ],
+      gutter: 1.1cm,
+    )
+    #if note != none [
+      #v(0.8em)
+      #muted-copy[#note]
+    ]
+  ]
+]
+
+#let faq-slide(
+  title: [],
+  left: [],
+  right: [],
+  note: none,
+  width: 62%,
+  show-logo: false,
+) = slide[
+  #if show-logo [
+    #corner-logo()
+  ]
+
+  #v(0.25cm)
+  #content-block(width: width)[
+    #section-kicker[FAQ]
+    #v(0.65em)
+    #section-title[#title]
+    #v(1em)
+    #soft-panel[
+      #strong[#left]
+      #v(0.45em)
+      #muted-copy[#right]
+    ]
+    #if note != none [
+      #v(0.8em)
+      #muted-copy[#note]
+    ]
+  ]
 ]
 
 #let appendix-divider(
@@ -403,20 +510,20 @@
 #let final-slide(
   title: [],
   note: none,
-  width: 70%,
+  width: 64%,
   show-logo: true,
 ) = slide[
   #if show-logo [
     #corner-logo(size: 2cm)
   ]
 
-  #v(0.75cm)
+  #v(0.95cm)
   #content-block(width: width)[
     #section-kicker[Final idea]
     #v(0.8em)
-    #hero-title[#title]
+    #text(size: 42pt, weight: "semibold", fill: text-main)[#title]
     #if note != none [
-      #v(0.9em)
+      #v(0.8em)
       #muted-copy[#note]
     ]
   ]

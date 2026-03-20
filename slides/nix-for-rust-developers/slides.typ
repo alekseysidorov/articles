@@ -5,72 +5,69 @@
 
 #title-slide(
   title: [Nix для Rust-разработчика],
-  subtitle: [Как сделать среду, команды и CI частью проекта],
+  subtitle: [Воспроизводимое окружение локально и в CI],
   author: [Алексей Сидоров · Ведущий Rust-разработчик],
-  year: [2025],
+  year: [2026],
 )
 
 #big-idea(
-  title: [У проекта должен быть один источник правды.],
   kicker-text: [Thesis],
+  title: [У проекта должен быть один источник правды.],
   note: [
-    На словах всё просто: `cargo build`.
-    Но в реальности основная сложность часто не в коде, а в окружении вокруг него.
+    Проблема обычно уже не в коде.
+    Проблема в среде вокруг него.
   ],
 )
 
 #explain-slide(
   kicker-text: [Problem],
-  title: [Фрагментированная среда],
+  title: [Проект живёт сразу в нескольких описаниях],
   lead: [
-    На самом деле один проект начинает жить сразу в нескольких описаниях.
+    `Cargo.toml` — это не полное описание проекта.
   ],
   points: (
     [`Cargo.toml` знает только про crates],
-    [`rust-toolchain`, `brew`, `apt`, `scripts/` живут отдельно],
-    [в реальности CI проверяет не совсем то же самое, что вы запускаете локально],
+    [toolchain, system deps и scripts существут отдельно],
+    [CI часто проверяет не совсем то, что вы можете запустить локально],
   ),
-  aside: [
-    #text(size: 11pt, weight: "medium", fill: accent, upper([Symptoms]))
-    #v(0.45em)
-    #body-copy[
-      onboarding дорогой,
-      README устаревает,
-      локально работает — в CI падает
-    ]
-  ],
 )
 
-#comparison-slide(
+#symptom-slide(
+  title: [Что ломается дальше],
+  lines: (
+    [onboarding дорогой],
+    [README устаревает],
+    [локально работает — в CI падает],
+  ),
+)
+
+#compact-comparison-slide(
   title: [Cargo vs Nix],
   left-title: [Cargo],
-  left-body: [
-    #text(size: 18pt, weight: "medium")[Сборка Rust-кода]
-    #v(0.5em)
-    #muted-copy[
-      crates, features, workspace, lockfile
-    ]
-  ],
+  left-items: (
+    [сборка Rust-кода],
+    [crates],
+    [features],
+    [workspace],
+    [lockfile],
+  ),
   right-title: [Nix],
-  right-body: [
-    #text(size: 18pt, weight: "medium")[Среда и проверки]
-    #v(0.5em)
-    #muted-copy[
-      toolchain, system libs, команды проекта, CI checks
-    ]
-  ],
-  note: [
-    Тут важно понять разницу.
-    `cargo` описывает сборку, а `nix` — среду, в которой эта сборка вообще возможна.
-  ],
+  right-items: (
+    [среда и проверки],
+    [toolchain],
+    [system libs],
+    [команды проекта],
+    [CI checks],
+  ),
+  note: [Cargo описывает сборку. Nix описывает среду, в которой эта сборка вообще возможна.],
 )
 
 #big-idea(
-  kicker-text: [What is a flake],
+  kicker-text: [Definition],
   title: [Flake — это воспроизводимая точка входа в проект.],
   note: [
-    Если упростить, это стандартная точка входа в Nix-проект.
-    `flake.nix` описывает проект, а `flake.lock` фиксирует входы.
+    `flake.nix` — описание.
+    `flake.lock` — фиксация входов.
   ],
 )
 
@@ -80,15 +77,15 @@
   body: [
     #bash-code(
       ```text
-      $ git clone <repo>
-      $ nix develop
-      $ cargo test
+      git clone <repo>
+      cd <repo>
+      nix develop
+      cargo test
       ```.text,
     )
   ],
   note: [
-    На практике это означает простой сценарий:
-    clone → `nix develop` → работаешь.
+    clone → `nix develop` → работаешь
   ],
 )
 
@@ -104,41 +101,26 @@
     )
   ],
   note: [
-    Ключевая идея простая:
     CI перестаёт быть вторым местом, где руками описана логика проекта.
   ],
 )
 
-#big-idea(
-  kicker-text: [Demo],
-  title: [Дальше важнее не теория, а live demo.],
+#demo-slide(
+  title: [Дальше важнее не теория, а demo.],
   note: [
     Посмотрим на реальный проект.
-    Как устроены `devShell`, `checks` и `apps`, и что это меняет на практике.
   ],
+  steps: (),
 )
 
-#final-slide(
-  title: [Воспроизводимость становится частью проекта.],
-  note: [
-    Не “где-то в README написано, как это повторить”.
-    А среда, команды и проверки уже описаны и реально исполняются.
-  ],
-)
-
-// APPENDIX
-
-#big-idea(
-  kicker-text: [Appendix],
-  title: [Дополнительные материалы],
-  note: [
-    Это запасные слайды.
-    Их имеет смысл держать после demo для вопросов и спокойного разбора.
-  ],
+#appendix-divider(
+  title: [Appendix],
+  note: [Спокойный разбор после demo.],
 )
 
 #code-slide(
   title: [Что такое flake на практике],
+  kicker-text: [Appendix],
   body: [
     #nix-code(
       ```text
@@ -155,100 +137,96 @@
     )
   ],
   note: [
-    Тут важно не само слово `flake`.
-    Важно, что у проекта появляется одно описание среды и точек входа.
+    Одно описание среды и точек входа.
   ],
 )
 
 #explain-slide(
   kicker-text: [devShell],
-  title: [`nix develop` как нормальная точка входа],
-  lead: [
-    Вместо инструкции “поставь вот это всё руками”
-    появляется одна нормальная команда входа в среду.
-  ],
+  title: [`nix develop` — нормальная точка входа],
+  lead: none,
   points: (
-    [правильный Rust toolchain],
+    [Rust toolchain],
     [`clippy`, `rustfmt`, `taplo`, `typos`],
     [`openssl`, `protobuf`, `pkg-config`, `clang`],
   ),
 )
 
-#explain-slide(
-  kicker-text: [apps],
+#code-slide(
   title: [`nix run` как launcher команд],
-  lead: [
-    Если посмотреть практично, проект начинает экспортировать явные команды.
-    Не shell-скрипты по углам репозитория, а нормальные точки входа.
+  kicker-text: [Commands],
+  body: [
+    #bash-code(
+      ```text
+      nix run .#lint
+      nix run .#test
+      nix run nixpkgs#jq
+      ```.text,
+    )
   ],
-  points: (
-    [`nix run .#lint`],
-    [`nix run .#test`],
-    [`nix run nixpkgs#jq`],
-  ),
+  note: [
+    Проект экспортирует явные команды, а не shell-скрипты по углам.
+  ],
 )
 
-#comparison-slide(
+#compact-comparison-slide(
   title: [Without Nix / With Nix],
   left-title: [Without Nix],
-  left-body: [
-    #text(size: 18pt, weight: "medium")[Среда описана неявно]
-    #v(0.55em)
-    #muted-copy[
-      README, CI YAML, системные пакеты,
-      локальные скрипты и знания команды
-    ]
-  ],
+  left-items: (
+    [README],
+    [CI YAML],
+    [системные пакеты],
+    [локальные скрипты],
+    [знания команды],
+  ),
   right-title: [With Nix],
-  right-body: [
-    #text(size: 18pt, weight: "medium")[Среда описана в проекте]
-    #v(0.55em)
-    #muted-copy[
-      `devShells`, `checks`, `apps`, `packages`
-      становятся частью одного описания
-    ]
-  ],
+  right-items: (
+    [devShells],
+    [checks],
+    [apps],
+    [packages],
+    [одно описание],
+  ),
+  note: none,
 )
 
-#comparison-slide(
-  title: [Почему это особенно полезно в Rust],
+#compact-comparison-slide(
+  title: [Где Nix окупается быстрее всего],
   left-title: [Простые проекты],
-  left-body: [
-    #text(size: 18pt, weight: "medium")[Иногда можно жить и без этого]
-    #v(0.55em)
-    #muted-copy[
-      если зависимостей мало,
-      CI простой,
-      а окружение почти не отличается по платформам
-    ]
-  ],
+  left-items: (
+    [мало зависимостей],
+    [простой CI],
+    [одна платформа],
+  ),
   right-title: [Сложные проекты],
-  right-body: [
-    #text(size: 18pt, weight: "medium")[Окупаемость растёт быстро]
-    #v(0.55em)
-    #muted-copy[
-      `openssl-sys`, `bindgen`, `protobuf`,
-      `rdkafka`, `gstreamer`, macOS vs Linux, сложный CI
-    ]
-  ],
+  right-items: (
+    [openssl-sys],
+    [bindgen],
+    [protobuf],
+    [rdkafka],
+    [gstreamer],
+    [macOS + Linux],
+  ),
+  note: none,
 )
 
 #explain-slide(
   kicker-text: [CI],
-  title: [Почему Nix хорошо ложится на CI],
+  title: [CI — исполнитель, а не источник правды],
   lead: [
-    Если проверки вынесены в `checks`,
-    дальше CI фактически становится просто исполнителем.
+    CI не описывает проект.
+    Он его исполняет.
   ],
   points: (
     [CI ставит Nix],
-    [CI запускает `nix flake check`],
-    [логика проверок остаётся в проекте, а не в YAML],
+    [CI запускает checks],
+    [логика остаётся в проекте],
   ),
 )
 
 #code-slide(
-  title: [Идея checks],
+  title: [checks = один и тот же набор локально и в CI],
+  kicker-text: [Checks],
   body: [
     #nix-code(
       ```text
@@ -261,21 +239,19 @@
     )
   ],
   note: [
-    Отсюда следует простая вещь:
-    один и тот же набор проверок можно запускать и локально, и в CI.
+    Не второй список проверок в YAML.
+    Те же самые проверки.
   ],
 )
 
 #explain-slide(
-  kicker-text: [Nix vs NixOS],
-  title: [Nix не равен NixOS],
-  lead: [
-    Тут важно не путать инструмент и дистрибутив.
-  ],
+  kicker-text: [FAQ],
+  title: [Nix ≠ NixOS],
+  lead: none,
   points: (
-    [`Nix` — инструмент для пакетов, сред и сборок],
-    [`NixOS` — Linux-дистрибутив, построенный вокруг Nix],
-    [использовать `nix develop` и flakes можно и на macOS, и на обычном Linux],
+    [`Nix` — инструмент],
+    [`NixOS` — дистрибутив],
+    [flake'и и `nix develop` работают и на macOS, и на обычном Linux],
   ),
 )
 
@@ -286,73 +262,90 @@
     #text(size: 18pt, weight: "medium")[Где это запускать]
     #v(0.55em)
     #muted-copy[
-      контейнер, образ, упаковка и запуск приложения
+      контейнер
+      #linebreak()
+      образ
+      #linebreak()
+      упаковка приложения
     ]
   ],
   right-title: [Nix],
   right-body: [
-    #text(size: 18pt, weight: "medium")[Из чего это собирается]
+    #text(size: 18pt, weight: "medium")[Из чего это собирать]
     #v(0.55em)
     #muted-copy[
-      входы, toolchain, системные зависимости,
-      воспроизводимая dev/build-среда
+      входы
+      #linebreak()
+      toolchain
+      #linebreak()
+      системные зависимости
+      #linebreak()
+      dev/build environment
     ]
   ],
   note: [
-    Тут речь про разные слои.
-    Docker и Nix не конкуренты по умолчанию и вполне могут жить вместе.
+    Это разные слои.
+    Они не обязаны конкурировать.
   ],
 )
 
 #code-slide(
   title: [`flake.lock` важен не меньше, чем `Cargo.lock`],
+  kicker-text: [Lockfile],
   body: [
     #text-code(
       ```text
-      Cargo.lock  -> фиксирует crates
-      flake.lock  -> фиксирует dev/build environment
+      Cargo.lock  → crates
+      flake.lock  → dev/build environment
       ```.text,
     )
   ],
   note: [
-    Если упростить, это lockfile уровнем выше.
-    Не только для Rust-зависимостей, а для рабочей среды целиком.
+    Это lockfile уровнем выше.
   ],
 )
 
 #explain-slide(
   kicker-text: [Architecture],
-  title: [Почему это вообще работает],
-  lead: [
-    Ключевая идея в том, что зависимости описываются явно.
-    А результат привязывается к своим входам.
-  ],
+  title: [Почему это воспроизводимо],
+  lead: none,
   points: (
+    [зависимости описаны явно],
     [артефакты живут в `/nix/store/...`],
+    [сборка идёт в sandbox],
+    [без доступа к сети],
     [меньше неявных зависимостей от системы],
-    [проще получать одинаковую среду на разных машинах],
   ),
+  aside: [
+    #text(size: 11pt, weight: "medium", fill: accent, upper([Build model]))
+    #v(0.45em)
+    #body-copy[
+      checks строятся на копии репозитория
+
+      по эффекту это похоже на лёгкий Docker для сборки
+    ]
+  ],
 )
 
 #code-slide(
-  title: [`direnv` для ежедневной работы],
+  title: [`direnv`],
+  kicker-text: [Daily use],
   body: [
     #bash-code(
       ```text
-      .envrc
-
+      # .envrc
       use flake
       ```.text,
     )
   ],
   note: [
-    На практике это просто удобнее.
-    Заходишь в директорию — среда поднимается автоматически.
+    `cd` в проект → среда активировалась
   ],
 )
 
 #code-slide(
-  title: [Nix как launcher инструментов],
+  title: [Nix как universal launcher],
+  kicker-text: [Tooling],
   body: [
     #bash-code(
       ```text
@@ -363,15 +356,13 @@
     )
   ],
   note: [
-    Это удобно и локально, и в автоматизации.
-    Особенно когда не хочется ставить инструменты глобально.
+    Локально, в CI и в автоматизации — без глобальной установки.
   ],
 )
 
 #final-slide(
-  title: [Если вокруг `cargo build` уже вырос отдельный мир, Nix обычно быстро окупается.],
+  title: [Если вокруг `cargo build` уже вырос отдельный мир, Nix быстро окупается.],
   note: [
-    Особенно если есть системные зависимости,
-    несколько платформ, сложный CI и дорогой onboarding.
+    Особенно когда есть native deps, несколько платформ и сложный CI.
   ],
 )
