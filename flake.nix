@@ -37,6 +37,8 @@
           };
         };
 
+        typstBuild2 = pkgs.callPackage ./nix/typstBuild.nix { };
+
         # Вспомогательная функция для сборки слайдов из .typ файла.
         # Принимает attrset с полями name и src, возвращает derivation,
         # которая кладёт PDF в $out/slides.pdf.
@@ -111,9 +113,16 @@
         #     src = "slides/my-new-talk/slides.typ";
         #   };
         packages = {
-          slides-nix-for-rust-developers = typstBuild {
+          slides-nix-for-rust-developers = typstBuild2 {
             name = "slides-nix-for-rust-developers";
             src = "slides/nix-for-rust-developers/slides.typ";
+            extraBuildInputs = with pkgs; [
+              # Шрифты из theme.typ
+              inter
+              jetbrains-mono
+              # Route 159 — официальный шрифт NixOS, используется в slides.typ
+              route159
+            ];
           };
         };
       }
