@@ -95,6 +95,19 @@
               route159
             ];
           };
+
+          slides-structured-context-log-for-rust = typstBuild {
+            name = "structured-context-log-for-rust";
+            src = ./slides/structured-context-log-for-rust;
+
+            extraBuildInputs = with pkgs; [
+              # Шрифты из theme.typ
+              inter
+              jetbrains-mono
+              # Route 159 — официальный шрифт NixOS, используется в slides.typ
+              route159
+            ];
+          };
         };
       }
     );
