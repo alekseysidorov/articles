@@ -14,26 +14,19 @@
   year: [2026],
 )
 
-#hero-slide(
-  kicker: [Thesis],
-  title: [У проекта должен быть один источник правды.],
+#code-slide(
+  title: [Nix как universal launcher],
+  kicker: [Tooling],
   note: [
-    Проблема обычно уже не в коде.
-    Проблема в среде вокруг него.
+    Локально, в CI и в автоматизации без глобальной установки.
   ],
-)
-
-#content-slide(
-  kicker: [Problem],
-  title: [Проект живёт сразу в нескольких описаниях],
-  lead: [
-    `Cargo.toml` — это только часть картины. Остальное быстро расходится.
+  body: [
+    #rust-code(
+      ```text
+      log::info!("Hello world")
+      ```.text,
+    )
   ],
-  items: (
-    [`Cargo.toml` знает только про crates],
-    [toolchain, system deps и scripts — отдельно],
-    [CI часто проверяет не то же самое, что запускаете локально],
-  ),
 )
 
 #hero-slide(

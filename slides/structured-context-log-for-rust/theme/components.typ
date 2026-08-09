@@ -3,6 +3,7 @@
 // ─── Raw code helpers ───────────────────────────────────────────────────────
 #let raw-code(text, lang: none) = raw(text, block: true, lang: lang)
 #let bash-code(text) = raw-code(text, lang: "bash")
+#let rust-code(text) = raw-code(text, lang: "rust")
 #let yaml-code(text) = raw-code(text, lang: "yaml")
 #let nix-code(text) = raw-code(text, lang: "nix")
 
