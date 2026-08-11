@@ -44,9 +44,9 @@
 )
 
 // ─── Typography scale (tuned for projector at distance) ─────────────────────
-#let hero-size = 46pt
-#let title-size = 34pt
-#let subtitle-size = 22pt
+#let hero-size = 40pt
+#let title-size = 32pt
+#let subtitle-size = 20pt
 #let body-size = 20pt
 #let body-small-size = 18pt
 #let code-size = 18pt
