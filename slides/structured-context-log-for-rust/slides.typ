@@ -181,6 +181,63 @@
   title: [Добавляем контекстное логирование в log],
 )
 
+#code-slide(
+  title: [Обертка над log],
+  kicker: [log],
+  note: [Оборачиваем logger, превращая его в контекстный],
+  body: [
+    #rust-code(
+      ```text
+      use structured_logger::Builder;
+
+      let level = log::LevelFilter::Info;
+      let inner = Builder::default().build();
+
+      ContextLogger::new(inner).init(level);
+      ```.text,
+    )
+  ],
+)
+
+#code-slide(
+  title: [Базовый пример],
+  kicker: [sync],
+  note: [Вывод лога будет содержать поля `example` и `user_id`],
+  body: [
+    #rust-code(
+      ```text
+      let log_context = LogContext::new()
+          .with_inherited_field("example", "sync" )
+          .with_local_field    ("user_id", "12345");
+
+      log_context.in_scope(|| {
+          log::info!("Logging in");
+      });
+      ```.text,
+    )
+
+  ],
+)
+
+#code-slide(
+  title: [Асинхронный пример],
+  kicker: [async],
+  note: [Вывод лога будет содержать поля `thread` и `name`],
+  body: [
+    #rust-code(
+      ```text
+      let log_context = LogContext::new()
+          .with_inherited_field("thread", "main" )
+          .with_local_field    ("name"  , "Alice")
+
+      async move { log::info!("Logging in"); }
+        .in_log_context(log_context)
+        .await
+      ```.text,
+    )
+
+  ],
+)
 
 #hero-slide(
   kicker: [Final],

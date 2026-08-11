@@ -49,7 +49,7 @@
 #let subtitle-size = 20pt
 #let body-size = 20pt
 #let body-small-size = 18pt
-#let code-size = 18pt
+#let code-size = 16pt
 #let kicker-size = 14pt
 #let page-number-size = 13pt
 
