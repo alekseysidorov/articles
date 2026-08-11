@@ -10,6 +10,10 @@ let
     typst
     fontconfig
   ];
+
+  openCommand = if stdenv.isDarwin
+    then "open"
+    else "${xdg-utils}/bin/xdg-open";
 in
 {
   src,
@@ -34,7 +38,7 @@ stdenv.mkDerivation {
     mkdir -p $out/bin
     cat > $out/bin/${name} <<EOF
     #!/usr/bin/env bash
-    exec ${xdg-utils}/bin/xdg-open "$out/${name}.pdf"
+    exec ${openCommand} "$out/${name}.pdf"
     EOF
     chmod +x $out/bin/${name}
   '';

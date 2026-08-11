@@ -6,6 +6,7 @@
 #let rust-code(text) = raw-code(text, lang: "rust")
 #let yaml-code(text) = raw-code(text, lang: "yaml")
 #let nix-code(text) = raw-code(text, lang: "nix")
+#let json-code(text) = raw-code(text, lang: "json")
 
 // ─── Typography aliases (avoid shadowing by slide parameters) ───────────────
 #let section-kicker(body) = kicker(body)

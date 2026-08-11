@@ -19,7 +19,7 @@
 #let sidebar-w = 4.4cm
 #let sidebar-gap = 0.9cm
 
-#let logo-scale = 1.18
+#let logo-scale = 1.25
 #let logo-size = sidebar-w * logo-scale
 
 #let margin-right = 1.8cm
@@ -47,7 +47,7 @@
 #let hero-size = 46pt
 #let title-size = 34pt
 #let subtitle-size = 22pt
-#let body-size = 22pt
+#let body-size = 20pt
 #let body-small-size = 18pt
 #let code-size = 18pt
 #let kicker-size = 14pt
