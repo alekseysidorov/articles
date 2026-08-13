@@ -65,6 +65,7 @@
             jetbrains-mono
             # Route 159 — официальный шрифт NixOS из branding guide
             route159
+            qrencode
           ];
         };
 
@@ -104,8 +105,7 @@
               # Шрифты из theme.typ
               inter
               jetbrains-mono
-              # Route 159 — официальный шрифт NixOS, используется в slides.typ
-              route159
+              courier-prime
             ];
           };
         };

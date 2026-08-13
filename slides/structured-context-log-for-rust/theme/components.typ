@@ -262,6 +262,33 @@
 ]
 
 // ═════════════════════════════════════════════════════════════════════════════
+// QR SLIDE — centred title + link + QR code image
+// ═════════════════════════════════════════════════════════════════════════════
+#let qr-slide(
+  title: [],
+  kicker: [Repo],
+  link: [],
+  qr: "assets/qr.png",
+  qr-size: 6cm,
+  width: 70%,
+) = slide[
+  #v(1fr)
+  #align(center)[
+    #block(width: width)[
+      #set align(center)
+      #section-kicker[#kicker]
+      #v(rhythm * 0.6)
+      #hero-title[#title]
+      #v(rhythm * 0.5)
+      #text(size: subtitle-size, fill: text-muted)[#link]
+      #v(rhythm * 0.8)
+      #image(qr, width: qr-size, height: qr-size, fit: "contain")
+    ]
+  ]
+  #v(1fr)
+]
+
+// ═════════════════════════════════════════════════════════════════════════════
 // CODE SLIDE — title + note + code block
 // ═════════════════════════════════════════════════════════════════════════════
 #let code-slide(

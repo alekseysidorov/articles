@@ -247,3 +247,10 @@
     [GitHub — github.com/alekseysidorov],
   ),
 )
+
+#qr-slide(
+  kicker: [Repo],
+  title: [context-logger],
+  link: [github.com/alekseysidorov/context-logger],
+  qr: "assets/qr-context-logger.png",
+)
