@@ -263,12 +263,14 @@
 
 // ═════════════════════════════════════════════════════════════════════════════
 // QR SLIDE — centred title + link + QR code image
+// `qr` is the raw image bytes (read by the caller, so the path resolves
+// relative to the caller's file, e.g. slides.typ).
 // ═════════════════════════════════════════════════════════════════════════════
 #let qr-slide(
   title: [],
   kicker: [Repo],
   link: [],
-  qr: "assets/qr.png",
+  qr: none,
   qr-size: 6cm,
   width: 70%,
 ) = slide[
@@ -282,7 +284,7 @@
       #v(rhythm * 0.5)
       #text(size: subtitle-size, fill: text-muted)[#link]
       #v(rhythm * 0.8)
-      #image(qr, width: qr-size, height: qr-size, fit: "contain")
+      #image.decode(qr, width: qr-size, height: qr-size, fit: "contain")
     ]
   ]
   #v(1fr)

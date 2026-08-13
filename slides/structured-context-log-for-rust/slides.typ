@@ -252,5 +252,6 @@
   kicker: [Repo],
   title: [context-logger],
   link: [github.com/alekseysidorov/context-logger],
-  qr: "assets/qr-context-logger.png",
+  qr: read("assets/qr-context-logger.png", encoding: none),
+  qr-size: 6cm,
 )
