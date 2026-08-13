@@ -106,7 +106,7 @@
       ```text
       {
         "timestamp":1786477876240, "user":"aleksey",
-        "message":"Request finished for user"
+        "request_id": "42", "message":"Request finished for user"
       }
       ```.text,
     )
