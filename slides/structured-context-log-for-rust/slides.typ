@@ -32,25 +32,25 @@
     Разница прежде всего в намерении
   ],
   items: (
-    [`println` - это просто вывод произвольной],
-    [`dbg` - это печать отладочной информации в процессе разработки. В релизной ветке, его не должно быть],
-    [`log` - это журналирование событий. Лог должен иметь обязательные поля],
+    [#strong[`println!`] - это просто вывод произвольной],
+    [#strong[`dbg!`] - это печать отладочной информации в процессе разработки. В релизной ветке, его не должно быть],
+    [#strong[`log!`] - это журналирование событий. Лог должен иметь обязательные поля],
   ),
 )
 
 #code-slide(
   title: [Уровень зрелости логов - println],
   kicker: [println],
-  note: [Просто не структурированный текст как есть без временных меток],
+  note: [Простой неструктурированный текст как есть без временных меток],
   body: [
     #rust-code(
       ```text
-      println!("Something happened");
+      println!("Request finished for user: {user}");
       ```.text,
     )
-    #bash-code(
+    #raw-code(
       ```text
-      Something happened
+      Request finished for user: aleksey
       ```.text,
     )
   ],
@@ -63,12 +63,12 @@
   body: [
     #rust-code(
       ```text
-      log::info!("Something happened");
+      log::info!("Request finished for user: {user}");
       ```.text,
     )
     #bash-code(
       ```text
-      [2026-08-11T19:38:35Z INFO  main] Something happened
+      [2026-08-11T19:38:35Z INFO  main] Request finished for user: aleksey
       ```.text,
     )
   ],
@@ -81,12 +81,12 @@
   body: [
     #rust-code(
       ```text
-      log::info!(answer = 42; "Something happened");
+      log::info!(user = "aleksey"; "Request finished for user");
       ```.text,
     )
     #bash-code(
       ```text
-      [2026-08-11T19:38:35Z INFO  main] Something happened answer=42
+      [2026-08-11T19:38:35Z INFO  main] Request finished for user: user=aleksey
       ```.text,
     )
   ],
@@ -99,14 +99,14 @@
   body: [
     #rust-code(
       ```text
-      log::info!(answer = 42; "Something happened");
+      log::info!(user = "aleksey"; "Request finished for user");
       ```.text,
     )
     #json-code(
       ```text
       {
         "timestamp":1786477876240, "user":"aleksey",
-        "answer":42, "message":"Something happened"
+        "message":"Request finished for user"
       }
       ```.text,
     )
@@ -117,20 +117,20 @@
   kicker: [Ecosystem],
   title: [Обзор экосистемы],
   items: (
-    [slog - структурное и контекстное логирование],
-    [tracing - фреймворк логирования и трассировки от tokio],
-    [log - де-факто стандартный фреймворк для логирования]
+    [#strong[`slog`] - структурное и контекстное логирование],
+    [#strong[`tracing`] - фреймворк логирования и трассировки от tokio],
+    [#strong[`log`] - стандартный фасад для логирования]
   ),
 )
 
 #content-slide(
   kicker: [Ecosystem],
   title: [Обзор экосистемы - slog],
-  lead: [Очень старая попытка создать контекстное логирование ],
+  lead: [Старая попытка создать контекстное логирование ],
   items: (
     [Поддерживает структурное и контекстное логирование],
     [Logger явно передается в качестве аргумента],
-    [Признан устаревшим - авторы рекомендуют tracing],
+    [Авторы сами рекомендуют перейти tracing],
     [
       #rust-code(
         ```text
@@ -170,7 +170,7 @@
   title: [Обзор экосистемы - log],
   lead: [Фактически, стандартная экосистема логирования],
   items: (
-    [Поддерживает структурное логирование, если включить `kv` feature],
+    [Поддерживает структурное логирование, если включить #strong[`kv`] feature],
     [Повсеместно распространен],
     [Не поддерживает контекстное логирование],
   ),

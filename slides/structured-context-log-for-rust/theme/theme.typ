@@ -177,7 +177,7 @@
 // ─── Logo helper ─────────────────────────────────────────────────────────────
 #let logo-mark(
   size: logo-size,
-  path: "../assets/rust-logo.svg",
+  path: "../assets/ferris.png",
 ) = image(
   path,
   width: size,
