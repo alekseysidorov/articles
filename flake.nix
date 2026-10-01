@@ -37,35 +37,7 @@
           };
         };
 
-        # Вспомогательная функция для сборки слайдов из .typ файла.
-        # Принимает attrset с полями name и src, возвращает derivation,
-        # которая кладёт PDF в $out/slides.pdf.
-        # Использование:
-        #   typstBuild { name = "my-slides"; src = "slides/my-talk/slides.typ"; }
-        typstBuild =
-          { name, src }:
-          pkgs.stdenv.mkDerivation {
-            inherit name;
-            # Берём весь репозиторий как источник —
-            # слайды могут ссылаться на общие ресурсы (шрифты, картинки)
-            src = ./.;
-            buildInputs = with pkgs; [
-              typst
-              # Fontconfig нужен, чтобы Typst видел шрифты в nix-сборке
-              fontconfig
-              # Шрифты из theme.typ
-              inter
-              jetbrains-mono
-              # Route 159 — официальный шрифт NixOS, используется в slides.typ
-              route159
-            ];
-            buildPhase = ''
-              mkdir -p $out
-              typst compile ${src} $out/${name}.pdf
-            '';
-            # Фаза install не нужна — PDF уже в $out после buildPhase
-            dontInstall = true;
-          };
+        typstBuild = pkgs.callPackage ./nix/typstBuild.nix { };
       in
       {
         # formatter — стандартная точка входа для nix fmt
@@ -93,6 +65,7 @@
             jetbrains-mono
             # Route 159 — официальный шрифт NixOS из branding guide
             route159
+            qrencode
           ];
         };
 
@@ -108,12 +81,32 @@
         # Добавление новой статьи:
         #   slides-my-new-talk = typstBuild {
         #     name = "slides-my-new-talk";
-        #     src = "slides/my-new-talk/slides.typ";
+        #     src = ./slides/my-new-talk;
         #   };
         packages = {
           slides-nix-for-rust-developers = typstBuild {
             name = "slides-nix-for-rust-developers";
-            src = "slides/nix-for-rust-developers/slides.typ";
+            src = ./slides/nix-for-rust-developers;
+
+            extraBuildInputs = with pkgs; [
+              # Шрифты из theme.typ
+              inter
+              jetbrains-mono
+              # Route 159 — официальный шрифт NixOS, используется в slides.typ
+              route159
+            ];
+          };
+
+          slides-structured-context-log-for-rust = typstBuild {
+            name = "structured-context-log-for-rust";
+            src = ./slides/structured-context-log-for-rust;
+
+            extraBuildInputs = with pkgs; [
+              # Шрифты из theme.typ
+              inter
+              jetbrains-mono
+              courier-prime
+            ];
           };
         };
       }
